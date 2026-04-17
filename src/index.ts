@@ -534,17 +534,11 @@ class AhaMcp {
       "update_competitor",
       {
         description:
-          "Update an Aha! competitor record by numeric ID. Accepts a new name, description, and/or color. Returns the updated record. Use list_competitors to find the numeric ID. At least one field must be provided.",
+          "Update an Aha! competitor record by numeric ID. Accepts a new name and/or color. Returns the updated record. Use list_competitors to find the numeric ID. At least one field must be provided.",
         inputSchema: {
           product_id: z.string().describe("Workspace key (e.g. LUM)"),
           id: z.string().describe("Numeric ID of the competitor to update"),
           name: z.string().optional().describe("New competitor name"),
-          description: z
-            .string()
-            .optional()
-            .describe(
-              "New body content as raw HTML. Aha! stores and renders HTML directly — pass well-formed tags (e.g. <p>Text</p>). Do not pass markdown."
-            ),
           color: z
             .number()
             .optional()

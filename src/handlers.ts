@@ -1753,11 +1753,10 @@ export class Handlers {
   }
 
   async handleUpdateCompetitor(request: any) {
-    const { product_id, id, name, description, color } = request.params.arguments as {
+    const { product_id, id, name, color } = request.params.arguments as {
       product_id: string;
       id: string;
       name?: string;
-      description?: string;
       color?: number;
     };
 
@@ -1769,16 +1768,15 @@ export class Handlers {
       throw new McpError(ErrorCode.InvalidParams, "Competitor id is required");
     }
 
-    if (name === undefined && description === undefined && color === undefined) {
+    if (name === undefined && color === undefined) {
       throw new McpError(
         ErrorCode.InvalidParams,
-        "At least one of name, description, or color must be provided"
+        "At least one of name or color must be provided"
       );
     }
 
     const payload: { [key: string]: unknown } = {};
     if (name !== undefined) payload.name = name;
-    if (description !== undefined) payload.description = description;
     if (color !== undefined) payload.color = color;
 
     try {
