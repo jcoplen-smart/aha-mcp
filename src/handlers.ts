@@ -1750,11 +1750,12 @@ export class Handlers {
   }
 
   async handleUpdateCompetitor(request: any) {
-    const { product_id, id, name, description } = request.params.arguments as {
+    const { product_id, id, name, description, color } = request.params.arguments as {
       product_id: string;
       id: string;
       name?: string;
       description?: string;
+      color?: number;
     };
 
     if (!product_id) {
@@ -1765,16 +1766,17 @@ export class Handlers {
       throw new McpError(ErrorCode.InvalidParams, "Competitor id is required");
     }
 
-    if (name === undefined && description === undefined) {
+    if (name === undefined && description === undefined && color === undefined) {
       throw new McpError(
         ErrorCode.InvalidParams,
-        "At least one of name or description must be provided"
+        "At least one of name, description, or color must be provided"
       );
     }
 
     const payload: { [key: string]: unknown } = {};
     if (name !== undefined) payload.name = name;
     if (description !== undefined) payload.description = description;
+    if (color !== undefined) payload.color = color;
 
     try {
       const data = await this.restRequest<any>(
@@ -1808,7 +1810,7 @@ export class Handlers {
       product_id: string;
       name: string;
       description?: string;
-      color?: string;
+      color?: number;
     };
 
     if (!product_id) {
@@ -1821,7 +1823,7 @@ export class Handlers {
 
     const payload: { [key: string]: unknown } = {
       name,
-      color: color ?? "#000000",
+      color: color ?? 29647,
     };
     if (description !== undefined) payload.description = description;
 

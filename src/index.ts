@@ -545,6 +545,10 @@ class AhaMcp {
             .describe(
               "New body content as raw HTML. Aha! stores and renders HTML directly — pass well-formed tags (e.g. <p>Text</p>). Do not pass markdown. Do not HTML-entity-encode structural tags — only encode literal <, >, or & characters that appear as text content."
             ),
+          color: z
+            .number()
+            .optional()
+            .describe("Numeric color value for the competitor (e.g. 29647)."),
         },
       },
       (args) =>
@@ -566,10 +570,10 @@ class AhaMcp {
               "Initial body content as raw HTML. Aha! stores and renders HTML directly — pass well-formed tags (e.g. <p>Text</p>). Do not pass markdown."
             ),
           color: z
-            .string()
+            .number()
             .optional()
             .describe(
-              "Hex color code for the competitor (e.g. #ff0000). Defaults to #000000 if omitted."
+              "Numeric color value for the competitor (e.g. 29647). Defaults to 29647 if omitted."
             ),
         },
       },
