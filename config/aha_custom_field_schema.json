@@ -4,7 +4,163 @@
     "how_to_regenerate": "See aha_custom_field_schema_README.md"
   },
   "custom_fields_by_record_type": {
+    "Persona": [
+      {
+        "name": "Education",
+        "api_key": "education",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Experience",
+        "api_key": "experience",
+        "field_type": "Number field",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Influence",
+        "api_key": "influence",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Product knowledge",
+        "api_key": "product_knowledge",
+        "field_type": "Predefined choice list",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Likes",
+        "api_key": "likes",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Dislikes",
+        "api_key": "dislikes",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Description",
+        "api_key": "description",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Responsibilities",
+        "api_key": "responsibilities",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Goals",
+        "api_key": "goals",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Challenges",
+        "api_key": "challenges",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Skills",
+        "api_key": "skills",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Trusts information from",
+        "api_key": "trusts_information_from",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Goals and Needs",
+        "api_key": "goals_and_needs",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Motivation",
+        "api_key": "motivation",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Pain Points",
+        "api_key": "pain_points",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Voice",
+        "api_key": "voice",
+        "field_type": "Text field",
+        "used_in_layouts": [],
+        "used_in_products": []
+      }
+    ],
     "Competitor": [
+      {
+        "name": "Revenue",
+        "api_key": "revenue",
+        "field_type": "Number field",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Employees",
+        "api_key": "employees",
+        "field_type": "Number field",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Growth Rate",
+        "api_key": "growth_rate",
+        "field_type": "Text field",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Customers",
+        "api_key": "customers",
+        "field_type": "Text field",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Pricing",
+        "api_key": "pricing",
+        "field_type": "Text field",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Mission",
+        "api_key": "mission",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
       {
         "name": "Description",
         "api_key": "description",
@@ -15,6 +171,41 @@
         "used_in_products": [
           "LUM (Lumio)"
         ]
+      },
+      {
+        "name": "Key Products",
+        "api_key": "products",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Strengths",
+        "api_key": "strengths",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Weaknesses",
+        "api_key": "weaknesses",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Differentiators",
+        "api_key": "differentiators",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Recent News",
+        "api_key": "recent_news",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
       },
       {
         "name": "HQ",
@@ -59,9 +250,46 @@
         "used_in_products": [
           "LUM (Lumio)"
         ]
+      },
+      {
+        "name": "Tags",
+        "api_key": "tags",
+        "field_type": "Tags field",
+        "used_in_layouts": [],
+        "used_in_products": []
+      }
+    ],
+    "Release": [
+      {
+        "name": "Investment Category",
+        "api_key": "release",
+        "field_type": "Predefined choice list",
+        "used_in_layouts": [],
+        "used_in_products": []
       }
     ],
     "Epic": [
+      {
+        "name": "Personas",
+        "api_key": "personas",
+        "field_type": "Personas field",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Go live date",
+        "api_key": "go_live_date",
+        "field_type": "Date field",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Website URL",
+        "api_key": "website_url",
+        "field_type": "URL/Email field",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
       {
         "name": "Sprint",
         "api_key": "sprint",
@@ -223,6 +451,13 @@
         ]
       },
       {
+        "name": "Review Status",
+        "api_key": "review_status",
+        "field_type": "Predefined choice list",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
         "name": "Review as a group",
         "api_key": "review_as_a_group",
         "field_type": "Predefined choice list",
@@ -241,9 +476,44 @@
           "CP (Content & Partnerships)",
           "COMPANY (SMART)"
         ]
+      },
+      {
+        "name": "Has linked features",
+        "api_key": "has_linked_features",
+        "field_type": "Predefined choice list",
+        "used_in_layouts": [],
+        "used_in_products": []
       }
     ],
     "Feature": [
+      {
+        "name": "Personas",
+        "api_key": "personas",
+        "field_type": "Personas field",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Go live date",
+        "api_key": "go_live_date",
+        "field_type": "Date field",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Website URL",
+        "api_key": "website_url",
+        "field_type": "URL/Email field",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Sprint",
+        "api_key": "sprint",
+        "field_type": "Editable choice list",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
       {
         "name": "UserVoice Idea",
         "api_key": "uservoice_idea",
@@ -263,6 +533,69 @@
           "CP (Content & Partnerships)",
           "COMPANY (SMART)"
         ]
+      },
+      {
+        "name": "Score Card",
+        "api_key": "prioritization",
+        "field_type": "Scorecard field",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Reason for rejection",
+        "api_key": "reason_for_rejection",
+        "field_type": "Text field",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Assumptions",
+        "api_key": "assumptions_pm",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Constraints",
+        "api_key": "constraints",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Review as a group",
+        "api_key": "review_as_a_group",
+        "field_type": "Predefined tags field",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Tags",
+        "api_key": "tags",
+        "field_type": "Tags field",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Category",
+        "api_key": "category",
+        "field_type": "Editable choice list",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Targeted persona",
+        "api_key": "persona",
+        "field_type": "Editable choice list",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Aha Idea #",
+        "api_key": "aha_idea",
+        "field_type": "Number field",
+        "used_in_layouts": [],
+        "used_in_products": []
       },
       {
         "name": "Review as a group",
@@ -285,6 +618,27 @@
         ]
       },
       {
+        "name": "Aha ID#",
+        "api_key": "aha_id",
+        "field_type": "URL/Email field",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Competition",
+        "api_key": "competition",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "HEART Worksheet",
+        "api_key": "heart_worksheet",
+        "field_type": "URL/Email field",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
         "name": "Ideation & Scoping Board",
         "api_key": "ideation__scoping_board",
         "field_type": "URL/Email field",
@@ -303,6 +657,27 @@
           "CP (Content & Partnerships)",
           "COMPANY (SMART)"
         ]
+      },
+      {
+        "name": "PM Lead",
+        "api_key": "pm_owner",
+        "field_type": "Users field",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "UX Lead",
+        "api_key": "ux_lead",
+        "field_type": "Users field",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Dev Lead",
+        "api_key": "dev_lead",
+        "field_type": "Users field",
+        "used_in_layouts": [],
+        "used_in_products": []
       },
       {
         "name": "Priority",
@@ -363,6 +738,306 @@
           "CP (Content & Partnerships)",
           "COMPANY (SMART)"
         ]
+      }
+    ],
+    "CreativeBrief": [
+      {
+        "name": "Launch date",
+        "api_key": "launch_date",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Owner",
+        "api_key": "owner",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Objective",
+        "api_key": "objective",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Budget",
+        "api_key": "budget",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Background",
+        "api_key": "background",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Audience",
+        "api_key": "audience",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Customer truths",
+        "api_key": "customer_truths",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Key messages",
+        "api_key": "key_messages",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Brand voice",
+        "api_key": "brand_voice",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Mandatory inclusions",
+        "api_key": "mandatory_inclusions",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Deliverables",
+        "api_key": "deliverables",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Additional notes",
+        "api_key": "additional_notes",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      }
+    ],
+    "Idea": [
+      {
+        "name": "Date",
+        "api_key": "date",
+        "field_type": "Date field",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Geography",
+        "api_key": "geography",
+        "field_type": "Predefined tags field",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Business Value",
+        "api_key": "business_value",
+        "field_type": "Text field",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Work Flow(s) Enabled",
+        "api_key": "work_flows_enabled",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Business / Customer Value",
+        "api_key": "business__customer_value",
+        "field_type": "Text field",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Customer / Business Value",
+        "api_key": "customer__business_value",
+        "field_type": "Text field",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Business Case",
+        "api_key": "business_case",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Dispositioned Where?",
+        "api_key": "linked_to_what_program",
+        "field_type": "Text field",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Department/Company (if applicable)",
+        "api_key": "departmentcompany_if_applicable",
+        "field_type": "Text field",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Rationale",
+        "api_key": "rationale",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Number of requests (from customer/market)",
+        "api_key": "number_of_requests",
+        "field_type": "Text field",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Opportunity size",
+        "api_key": "opportunity_size",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Timeline",
+        "api_key": "timeline",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Use Case",
+        "api_key": "use_case",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Frequency",
+        "api_key": "frequency",
+        "field_type": "Predefined choice list",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Competition",
+        "api_key": "competition",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Return on Investment",
+        "api_key": "return_on_investment",
+        "field_type": "Predefined choice list",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Targeted Persona",
+        "api_key": "targeted_persona",
+        "field_type": "Text field",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Review as a group",
+        "api_key": "review_as_a_group",
+        "field_type": "Predefined tags field",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Constraints",
+        "api_key": "constraints",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Scope",
+        "api_key": "scope",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Reason for rejection (if rejected)",
+        "api_key": "reason_for_rejection_if_rejected",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Score Card",
+        "api_key": "score_card",
+        "field_type": "Scorecard field",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Department / Company (if applies)",
+        "api_key": "department__company_if_applies",
+        "field_type": "Text field",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Description",
+        "api_key": "description",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Portfolio",
+        "api_key": "portfolio",
+        "field_type": "Predefined choice list",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Portfolio",
+        "api_key": "portf",
+        "field_type": "Predefined tags field",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Portfolio",
+        "api_key": "portfo",
+        "field_type": "Predefined choice list",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Portfolio",
+        "api_key": "ptfl",
+        "field_type": "Predefined choice list",
+        "used_in_layouts": [],
+        "used_in_products": []
+      }
+    ],
+    "Workspace": [
+      {
+        "name": "Geography",
+        "api_key": "geography__pod",
+        "field_type": "Predefined tags field",
+        "used_in_layouts": [],
+        "used_in_products": []
       }
     ],
     "Initiative": [

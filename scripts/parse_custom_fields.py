@@ -9,8 +9,6 @@ for row in reader:
     record_type = row["Record type"].strip()
     layouts = [l.strip() for l in row["Used in layouts"].split(",") if l.strip()]
     products = [p.strip() for p in row["Used in products"].split(",") if p.strip()]
-    if not layouts or not products:
-        continue
     if record_type not in schema:
         schema[record_type] = []
     schema[record_type].append({
@@ -26,7 +24,7 @@ output = {
         "exported_at": str(date.today()),
         "how_to_regenerate": "See aha_custom_field_schema_README.md"
     },
-    "custom_fields_by_record_type": {k: v for k, v in schema.items() if v}
+    "custom_fields_by_record_type": schema
 }
 
 print(json.dumps(output, indent=2))
