@@ -1730,7 +1730,7 @@ export class Handlers {
       }
 
       const result: Record<string, unknown> = {
-        id: c.id,
+        id: String(c.id),
         reference_num: c.reference_num,
         name: c.name,
         description: c.description?.body ?? null,
@@ -1788,7 +1788,7 @@ export class Handlers {
       const c = data.competitor;
 
       const result: Record<string, unknown> = {
-        id: c.id,
+        id: String(c.id),
         reference_num: c.reference_num,
         name: c.name,
         description: c.description?.body ?? null,
@@ -1835,7 +1835,7 @@ export class Handlers {
       const c = data.competitor;
 
       const result: Record<string, unknown> = {
-        id: c.id,
+        id: String(c.id),
         reference_num: c.reference_num,
         name: c.name,
         description: c.description?.body ?? null,
