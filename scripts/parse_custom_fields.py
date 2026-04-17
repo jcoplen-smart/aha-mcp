@@ -7,6 +7,8 @@ reader = csv.DictReader(io.StringIO(raw))
 schema = {}
 for row in reader:
     record_type = row["Record type"].strip()
+    if int(row["Record count"].strip()) == 0:
+        continue
     layouts = [l.strip() for l in row["Used in layouts"].split(",") if l.strip()]
     products = [p.strip() for p in row["Used in products"].split(",") if p.strip()]
     if record_type not in schema:
