@@ -1001,8 +1001,8 @@ export class Handlers {
       );
     }
 
-    // Extract product key from a reference-style input (e.g. "STU-97" → "STU")
-    const productKey = FEATURE_REF_REGEX.test(workspace_id)
+    // Extract product key from any reference-style input (e.g. "STU-97" → "STU", "STU-E-5" → "STU")
+    const productKey = workspace_id.includes("-")
       ? workspace_id.split("-")[0]
       : workspace_id;
 
@@ -1034,6 +1034,16 @@ export class Handlers {
       );
     }
 
+    // Filter by record_type using the workflow's kind field.
+    // Aha! kinds: "Feature" for features, "MasterFeature" for epics.
+    // Fall back to all workflows if kind is absent from the response.
+    const kindFilter = record_type === "feature" ? "feature" : "master";
+    const filteredWorkflows = workflows.filter((wf) => {
+      const kind: string = (wf.kind ?? "").toLowerCase();
+      return kind === "" || kind.includes(kindFilter);
+    });
+    const workflowsToProcess = filteredWorkflows.length > 0 ? filteredWorkflows : workflows;
+
     // Step 2: for each workflow, collect statuses. The list endpoint may already
     // include workflow_statuses inline; if not, fetch the workflow detail individually.
     const results: Array<{
@@ -1047,7 +1057,7 @@ export class Handlers {
       }>;
     }> = [];
 
-    for (const wf of workflows) {
+    for (const wf of workflowsToProcess) {
       let rawStatuses: any[] = Array.isArray(wf.workflow_statuses)
         ? wf.workflow_statuses
         : [];
