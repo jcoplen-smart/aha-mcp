@@ -1610,17 +1610,25 @@ export class Handlers {
         ? data.record_links
         : [];
 
-      const result = links.map((link: any) => ({
-        link_id: String(link.id ?? ""),
-        relationship:
-          link.link_type_name ??
-          Handlers.LINK_TYPE_LABELS[link.link_type] ??
-          `Type ${link.link_type}`,
-        linked_record_type: link.record?.type ?? "",
-        linked_record_reference_num: link.record?.reference_num ?? "",
-        linked_record_name: link.record?.name ?? "",
-        linked_record_status: link.record?.workflow_status?.name ?? "",
-      }));
+      const result = links.map((link: any) => {
+        // parent_record/child_record are the two sides; pick the one that isn't our record
+        const linkedRecord =
+          String(link.parent_record?.id) !== String(record.id)
+            ? link.parent_record
+            : link.child_record;
+        const relationship =
+          (typeof link.link_type === "string" ? link.link_type : undefined) ??
+          Handlers.LINK_TYPE_LABELS[link.link_type_id] ??
+          `Type ${link.link_type_id}`;
+        return {
+          link_id: String(link.id ?? ""),
+          relationship,
+          linked_record_type: linkedRecord?.type ?? "",
+          linked_record_reference_num: linkedRecord?.reference_num ?? "",
+          linked_record_name: linkedRecord?.name ?? "",
+          linked_record_status: linkedRecord?.workflow_status?.name ?? "",
+        };
+      });
 
       return {
         content: [
