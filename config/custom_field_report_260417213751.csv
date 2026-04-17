@@ -1,0 +1,117 @@
+Name,Internal name,API key,Field type,Record type,Created date,Record count,Description,Used in products,Used in layouts
+Education,,education,Note,Persona,2020-01-21,1,"","",""
+Experience,,experience,Number field,Persona,2020-01-21,1,"","",""
+Influence,,influence,Note,Persona,2020-01-21,1,"","",""
+Product knowledge,,product_knowledge,Predefined choice list,Persona,2020-01-21,1,"","",""
+Likes,,likes,Note,Persona,2020-01-21,1,"","",""
+Dislikes,,dislikes,Note,Persona,2020-01-21,1,"","",""
+Description,,description,Note,Persona,2020-01-21,1,"","",""
+Responsibilities,,responsibilities,Note,Persona,2020-01-21,1,"","",""
+Goals,,goals,Note,Persona,2020-01-21,1,"","",""
+Challenges,,challenges,Note,Persona,2020-01-21,0,"","",""
+Skills,,skills,Note,Persona,2020-01-21,1,"","",""
+Trusts information from,,trusts_information_from,Note,Persona,2020-01-21,1,"","",""
+Revenue,,revenue,Number field,Competitor,2020-01-21,0,"","",""
+Employees,,employees,Number field,Competitor,2020-01-21,0,"","",""
+Growth Rate,,growth_rate,Text field,Competitor,2020-01-21,0,"","",""
+Customers,,customers,Text field,Competitor,2020-01-21,0,"","",""
+Pricing,,pricing,Text field,Competitor,2020-01-21,0,"","",""
+Mission,,mission,Note,Competitor,2020-01-21,0,"","",""
+Description,,description,Note,Competitor,2020-01-21,1,"",LUM (Lumio),Competitors layout
+Key Products,,products,Note,Competitor,2020-01-21,0,<p></p>,"",""
+Strengths,,strengths,Note,Competitor,2020-01-21,0,"","",""
+Weaknesses,,weaknesses,Note,Competitor,2020-01-21,0,"","",""
+Differentiators,,differentiators,Note,Competitor,2020-01-21,0,"","",""
+Recent News,,recent_news,Note,Competitor,2020-01-21,0,"","",""
+Investment Category,,release,Predefined choice list,Release,2020-01-21,125,"","",""
+Goals and Needs,,goals_and_needs,Note,Persona,2020-01-23,4,<p></p>,"",""
+Motivation,,motivation,Note,Persona,2020-01-23,4,<p></p>,"",""
+Pain Points,,pain_points,Note,Persona,2020-01-23,4,<p></p>,"",""
+Voice,,voice,Text field,Persona,2020-01-23,4,<p></p>,"",""
+HQ,,hq,Text field,Competitor,2020-01-23,0,<p></p>,LUM (Lumio),Competitors layout
+Personas,,personas,Personas field,Epic,2020-05-05,0,,"",""
+Go live date,,go_live_date,Date field,Epic,2020-05-05,0,,"",""
+Website URL,,website_url,URL/Email field,Epic,2020-05-05,0,,"",""
+Personas,,personas,Personas field,Feature,2020-05-05,0,"","",""
+Go live date,,go_live_date,Date field,Feature,2020-05-05,0,"","",""
+Website URL,,website_url,URL/Email field,Feature,2020-05-05,0,"","",""
+Launch date,,launch_date,Note,CreativeBrief,2020-05-12,0,"","",""
+Owner,,owner,Note,CreativeBrief,2020-05-12,0,"","",""
+Objective,,objective,Note,CreativeBrief,2020-05-12,0,"","",""
+Budget,,budget,Note,CreativeBrief,2020-05-12,0,"","",""
+Background,,background,Note,CreativeBrief,2020-05-12,0,"","",""
+Audience,,audience,Note,CreativeBrief,2020-05-12,0,"","",""
+Customer truths,,customer_truths,Note,CreativeBrief,2020-05-12,0,"","",""
+Key messages,,key_messages,Note,CreativeBrief,2020-05-12,0,"","",""
+Brand voice,,brand_voice,Note,CreativeBrief,2020-05-12,0,"","",""
+Mandatory inclusions,,mandatory_inclusions,Note,CreativeBrief,2020-05-12,0,"","",""
+Deliverables,,deliverables,Note,CreativeBrief,2020-05-12,0,"","",""
+Additional notes,,additional_notes,Note,CreativeBrief,2020-05-12,0,"","",""
+Sprint,,sprint,Editable choice list,Feature,2020-07-31,208,"","",""
+Sprint,,sprint,Editable choice list,Epic,2020-07-31,45,"","STU (Studio),PL (Platform),AP (ID + AI),ACT (Activities),DS (Library & Document Services),FL (Flows),DO (DevOps),DAT (Data & Analytics),CP (Content & Partnerships),COMPANY (SMART)",Lumio Epic Layout
+Date,,date,Date field,Idea,2021-05-25,0,<p><br/></p>,"",""
+Geography,,geography__pod,Predefined tags field,Workspace,2021-07-05,0,<p><br/></p>,"",""
+Geography,,geography,Predefined tags field,Idea,2021-07-05,0,<p><br/></p>,"",""
+Business Value,,business_value,Text field,Idea,2021-07-07,0,<p><br/></p>,"",""
+Work Flow(s) Enabled,,work_flows_enabled,Note,Idea,2021-07-07,0,<p><br/></p>,"",""
+UserVoice Idea,,uservoice_idea,URL/Email field,Epic,2021-07-09,18,<p><br/></p>,"STU (Studio),PL (Platform),AP (ID + AI),ACT (Activities),DS (Library & Document Services),FL (Flows),DO (DevOps),DAT (Data & Analytics),CP (Content & Partnerships),COMPANY (SMART)",Lumio Epic Layout
+UserVoice Idea,,uservoice_idea,URL/Email field,Feature,2021-07-09,40,<p><br/></p>,"STU (Studio),PL (Platform),AP (ID + AI),ACT (Activities),DS (Library & Document Services),FL (Flows),DO (DevOps),DAT (Data & Analytics),CP (Content & Partnerships),COMPANY (SMART)",Lumio Features Layout
+Business / Customer Value,,business__customer_value,Text field,Idea,2021-07-14,0,<p><br/></p>,"",""
+Customer / Business Value,,customer__business_value,Text field,Idea,2021-07-14,0,<p><br/></p>,"",""
+Business Case,,business_case,Note,Idea,2021-09-02,0,"<p>Why is this important for customers?  How will this benefit SMART?  If possible, quantify the impact.</p>","",""
+Dispositioned Where?,,linked_to_what_program,Text field,Idea,2022-01-03,0,"<p><strong><em>Where did this idea finally end up? </em></strong> </p><p><strong>If </strong><span style=""color:#D50000""><strong>ALREADY EXISTS</strong></span><strong>, </strong><span style=""color:#64B80B""><strong>IMPLEMENTED </strong></span><strong>or </strong><span style=""color:#0073CF""><strong>PLANNED </strong></span><strong>then </strong><u><strong>provide link to where it can found</strong></u><strong> in Aha!, VSTS or elsewhere - or at least provide reference where that feature, requirement, master feature is on SMART&#x27;s products.  </strong>   </p><p>For FUTURE CONSIDERATION and WILL NOT IMPLEMENT leave blank and Core PM team will determine appropriate home for the idea in a separate ideas grooming session.  </p><p>Likewise, for NEEDS REVIEW and ADDITIONAL INFORMATION REQUIRED leave this blank.  This is an intermediate status and once the landing status for the idea is determined, you can complete this field.</p>","",""
+Score Card,,prioritization,Scorecard field,Feature,2022-08-30,0,<p><br/></p>,"",""
+Reason for rejection,,reason_for_rejection,Text field,Feature,2022-08-30,0,<p><br/></p>,"",""
+Assumptions,,assumptions_pm,Note,Feature,2022-08-30,0,"<p>What are the assumptions attached to this request? Could be technical, financial, business etc..</p>","",""
+Constraints,,constraints,Note,Feature,2022-08-30,0,"<p><span style=""color:#7030A0"">Limitations imposed on the solution, could be financial, technical etc..</span></p>","",""
+Review as a group,,review_as_a_group,Predefined tags field,Feature,2022-08-30,0,<p><br/></p>,"",""
+Tags,,tags,Tags field,Feature,2022-08-30,0,<p><br/></p>,"",""
+Category,,category,Editable choice list,Feature,2022-08-30,0,"<p><span style=""color:#4472C4"">What product or project does this feedback belong to?</span></p>","",""
+Targeted persona,,persona,Editable choice list,Feature,2022-08-30,0,"<p><span style=""color:#4472C4"">What are the personas targeted, if applicable</span></p>","",""
+Aha Idea #,,aha_idea,Number field,Feature,2022-08-30,0,<p><br/></p>,"",""
+Department/Company (if applicable),,departmentcompany_if_applicable,Text field,Idea,2022-08-30,0,<p><br/></p>,"",""
+Rationale,,rationale,Note,Idea,2022-08-31,0,"<p><span style=""color:black"">Why do you need this change? Is it related to a tender? </span></p>","",""
+Number of requests (from customer/market),,number_of_requests,Text field,Idea,2022-08-31,0,<p><br/></p>,"",""
+Opportunity size,,opportunity_size,Note,Idea,2022-08-31,0,"<p><span style=""color:black"">what do you think is the potential revenue, revenue at risk? If known, give more details about the opportunity, like product information, ie Panel(s), if there is an accessory tied to the deal, the qty of units etc..</span></p>","",""
+Timeline,,timeline,Note,Idea,2022-08-31,0,"<p><span style=""color:black"">Is it related to a tender or is it attached to a specific deadline? </span></p>","",""
+Use Case,,use_case,Note,Idea,2022-08-31,0,"<p><span style=""color:black"">Give the situation in which the customer is when facing this problem or desire.</span></p>","",""
+Frequency,,frequency,Predefined choice list,Idea,2022-08-31,0,"<p><span style=""color:black"">How often is the customer coming against this issue or how often would the customer need this new feature? </span>Low â once per month, Medium â once per week, High â daily.</p>","",""
+Competition,,competition,Note,Idea,2022-08-31,0,"<p><span style=""color:black"">Who in the competition do you know is already addressing the need/issue?</span></p>","",""
+Return on Investment,,return_on_investment,Predefined choice list,Idea,2022-08-31,0,"<p><span style=""color:black"">Is the customer willing to pay more for this functionality? </span></p>","",""
+Targeted Persona,,targeted_persona,Text field,Idea,2022-08-31,0,<p><br/></p>,"",""
+Review as a group,,review_as_a_group_flag,Predefined choice list,Feature,2022-08-31,130,<p><br/></p>,"STU (Studio),PL (Platform),AP (ID + AI),ACT (Activities),DS (Library & Document Services),FL (Flows),DO (DevOps),DAT (Data & Analytics),CP (Content & Partnerships),COMPANY (SMART)",Lumio Features Layout
+Review as a group,,review_as_a_group,Predefined tags field,Idea,2022-08-31,0,<p><br/></p>,"",""
+Constraints,,constraints,Note,Idea,2022-08-31,0,"<p>Limitations imposed on the solution, could be financial, technical etc..</p>","",""
+Scope,,scope,Note,Idea,2022-08-31,0,<p>Details on what part of the feedback we are actually going to answer.</p>,"",""
+Reason for rejection (if rejected),,reason_for_rejection_if_rejected,Note,Idea,2022-08-31,0,<p><br/></p>,"",""
+Score Card,,score_card,Scorecard field,Idea,2022-08-31,0,<p><br/></p>,"",""
+Department / Company (if applies),,department__company_if_applies,Text field,Idea,2022-08-31,0,<p><br/></p>,"",""
+Description,,description,Note,Idea,2022-08-31,0,"<p><span style=""color:black"">Description of the customer pain/problem or desireDescription of the customer pain/problem or desire</span></p>","",""
+Aha ID#,,aha_id,URL/Email field,Feature,2022-08-31,0,<p>Aha Idea Number</p>,"",""
+Competition,,competition,Note,Feature,2022-09-01,0,<p><br/></p>,"",""
+Portfolio,,portfolio,Predefined choice list,Idea,2022-10-12,0,"<p>Does this feedback relate to products for Business or Education, or both?</p>","",""
+Portfolio,,portf,Predefined tags field,Idea,2022-10-12,0,"<p>Does this feedback relate to products for Education, Business or both?</p>","",""
+Portfolio,,portfo,Predefined choice list,Idea,2022-10-12,0,"<p>Does this feedback relate to products for Education, Business or both?</p>","",""
+Portfolio,,ptfl,Predefined choice list,Idea,2022-10-12,0,"<p>Does this feedback relate to products for Education, Business, or both?</p>","",""
+HEART Worksheet,,heart_worksheet,URL/Email field,Feature,2023-07-25,8,<p><br/></p>,"",""
+Ideation & Scoping Board,,ideation__scoping_board,URL/Email field,Feature,2023-07-25,38,<p><br/></p>,"STU (Studio),PL (Platform),AP (ID + AI),ACT (Activities),DS (Library & Document Services),FL (Flows),DO (DevOps),DAT (Data & Analytics),CP (Content & Partnerships),COMPANY (SMART)",Lumio Features Layout
+PM Lead,,pm_owner,Users field,Feature,2023-07-26,48,<p><br/></p>,"",""
+UX Lead,,ux_lead,Users field,Feature,2023-07-26,18,<p><br/></p>,"",""
+Dev Lead,,dev_lead,Users field,Feature,2023-07-26,12,<p><br/></p>,"",""
+Customer Feedback Forum,,customer_feedback_forum,URL/Email field,Competitor,2023-07-28,3,<p><br/></p>,LUM (Lumio),Competitors layout
+Announcements/Blog,,announcementsblog,URL/Email field,Competitor,2023-07-31,6,<p><br/></p>,LUM (Lumio),Competitors layout
+Competitor Type,,competitor_type,Predefined choice list,Competitor,2023-07-31,4,<p><br/></p>,LUM (Lumio),Competitors layout
+Tags,,tags,Tags field,Competitor,2023-07-31,0,<p><br/></p>,"",""
+PM Lead,,pm_lead,Users field,Epic,2024-07-22,4,<p><br/></p>,"STU (Studio),PL (Platform),AP (ID + AI),ACT (Activities),DS (Library & Document Services),FL (Flows),DO (DevOps),DAT (Data & Analytics),CP (Content & Partnerships),COMPANY (SMART)",Lumio Epic Layout
+UX Lead,,ux_lead,Users field,Epic,2024-07-22,0,<p><br/></p>,"STU (Studio),PL (Platform),AP (ID + AI),ACT (Activities),DS (Library & Document Services),FL (Flows),DO (DevOps),DAT (Data & Analytics),CP (Content & Partnerships),COMPANY (SMART)",Lumio Epic Layout
+Dev Lead,,dev_lead,Users field,Epic,2024-07-22,1,<p><br/></p>,"STU (Studio),PL (Platform),AP (ID + AI),ACT (Activities),DS (Library & Document Services),FL (Flows),DO (DevOps),DAT (Data & Analytics),CP (Content & Partnerships),COMPANY (SMART)",Lumio Epic Layout
+Ideation & Scoping Board,,ideation__scoping_board,URL/Email field,Epic,2024-07-22,28,<p><br/></p>,"STU (Studio),PL (Platform),AP (ID + AI),ACT (Activities),DS (Library & Document Services),FL (Flows),DO (DevOps),DAT (Data & Analytics),CP (Content & Partnerships),COMPANY (SMART)",Lumio Epic Layout
+HEART Worksheet,,heart_worksheet,URL/Email field,Epic,2024-07-22,5,<p><br/></p>,"STU (Studio),PL (Platform),AP (ID + AI),ACT (Activities),DS (Library & Document Services),FL (Flows),DO (DevOps),DAT (Data & Analytics),CP (Content & Partnerships),COMPANY (SMART)",Lumio Epic Layout
+Rank,,rank,Number field,Initiative,2024-07-30,59,<p><br/></p>,LUM (Lumio),Initiatives layout
+Priority,,priority,Number field,Epic,2024-08-21,168,<p><br/></p>,"STU (Studio),PL (Platform),AP (ID + AI),ACT (Activities),DS (Library & Document Services),FL (Flows),DO (DevOps),DAT (Data & Analytics),CP (Content & Partnerships),COMPANY (SMART)",Lumio Epic Layout
+Priority,,priority,Number field,Feature,2024-08-21,118,<p><br/></p>,"STU (Studio),PL (Platform),AP (ID + AI),ACT (Activities),DS (Library & Document Services),FL (Flows),DO (DevOps),DAT (Data & Analytics),CP (Content & Partnerships),COMPANY (SMART)",Lumio Features Layout
+Review Status,,review_status,Predefined choice list,Epic,2024-10-24,0,<p><br/></p>,"",""
+Review as a group,,review_as_a_group,Predefined choice list,Epic,2024-10-24,1,<p><br/></p>,"STU (Studio),PL (Platform),AP (ID + AI),ACT (Activities),DS (Library & Document Services),FL (Flows),DO (DevOps),DAT (Data & Analytics),CP (Content & Partnerships),COMPANY (SMART)",Lumio Epic Layout
+Has linked features,,has_linked_features,Predefined choice list,Epic,2024-10-29,0,<p><br/></p>,"",""
+UX Status,,ux_status,Predefined choice list,Feature,2025-04-30,107,<p><br/></p>,"STU (Studio),PL (Platform),AP (ID + AI),ACT (Activities),DS (Library & Document Services),FL (Flows),DO (DevOps),DAT (Data & Analytics),CP (Content & Partnerships),COMPANY (SMART)",Lumio Features Layout
+Team,,team,Predefined choice list,Feature,2025-04-30,180,<p><br/></p>,"STU (Studio),PL (Platform),AP (ID + AI),ACT (Activities),DS (Library & Document Services),FL (Flows),DO (DevOps),DAT (Data & Analytics),CP (Content & Partnerships),COMPANY (SMART)",Lumio Features Layout
