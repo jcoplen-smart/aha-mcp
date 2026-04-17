@@ -1750,11 +1750,16 @@ export class Handlers {
   }
 
   async handleUpdateCompetitor(request: any) {
-    const { id, name, description } = request.params.arguments as {
+    const { product_id, id, name, description } = request.params.arguments as {
+      product_id: string;
       id: string;
       name?: string;
       description?: string;
     };
+
+    if (!product_id) {
+      throw new McpError(ErrorCode.InvalidParams, "product_id is required");
+    }
 
     if (!id) {
       throw new McpError(ErrorCode.InvalidParams, "Competitor id is required");
@@ -1773,7 +1778,7 @@ export class Handlers {
 
     try {
       const data = await this.restRequest<any>(
-        `/api/v1/competitors/${encodeURIComponent(id)}`,
+        `/api/v1/products/${encodeURIComponent(product_id)}/competitors/${encodeURIComponent(id)}`,
         "PUT",
         { competitor: payload }
       );
@@ -1799,10 +1804,11 @@ export class Handlers {
   }
 
   async handleCreateCompetitor(request: any) {
-    const { product_id, name, description } = request.params.arguments as {
+    const { product_id, name, description, color } = request.params.arguments as {
       product_id: string;
       name: string;
       description?: string;
+      color?: string;
     };
 
     if (!product_id) {
@@ -1813,7 +1819,10 @@ export class Handlers {
       throw new McpError(ErrorCode.InvalidParams, "name is required");
     }
 
-    const payload: { [key: string]: unknown } = { name };
+    const payload: { [key: string]: unknown } = {
+      name,
+      color: color ?? "#000000",
+    };
     if (description !== undefined) payload.description = description;
 
     try {
