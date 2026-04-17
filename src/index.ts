@@ -476,7 +476,7 @@ class AhaMcp {
           record_type: z
             .string()
             .describe(
-              "Type of the record to list links for. One of: feature, epic, release, idea, initiative, page, goal, release_phase, requirement"
+              "Type of the record to list links for. Currently only \"feature\" is supported by the Aha! record-links listing endpoint."
             ),
           reference_num: z
             .string()

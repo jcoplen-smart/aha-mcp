@@ -1587,22 +1587,18 @@ export class Handlers {
       );
     }
 
-    const apiPath = Handlers.RECORD_TYPE_API_PATH[record_type.toLowerCase()];
-    if (!apiPath) {
+    if (record_type.toLowerCase() !== "feature") {
       throw new McpError(
         ErrorCode.InvalidParams,
-        `Unsupported record type: ${record_type}`
+        `list_record_links only supports record_type "feature"; got "${record_type}"`
       );
     }
 
     try {
-      const record = await this.resolveRecord(
-        record_type.toLowerCase(),
-        reference_num
-      );
+      const record = await this.resolveRecord("feature", reference_num);
 
       const data = await this.restRequest<any>(
-        `/api/v1/${apiPath}/${encodeURIComponent(String(record.id))}/record_links?parent_and_child_links=true`,
+        `/api/v1/features/${encodeURIComponent(String(record.id))}/record_links?parent_and_child_links=true`,
         "GET"
       );
 
