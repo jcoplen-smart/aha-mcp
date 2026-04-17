@@ -14,6 +14,7 @@ import {
   AhaInitiativeSummary,
   AhaFeatureInReleaseSummary,
   AhaEpicInReleaseSummary,
+  AhaCompetitorSummary,
 } from "./types.js";
 import {
   getPageQuery,
@@ -1678,6 +1679,177 @@ export class Handlers {
         ErrorCode.InternalError,
         `Failed to delete record link: ${msg}`
       );
+    }
+  }
+
+  async handleListCompetitors(request: any) {
+    const { product_id } = request.params.arguments as { product_id: string };
+
+    if (!product_id) {
+      throw new McpError(ErrorCode.InvalidParams, "product_id is required");
+    }
+
+    try {
+      const competitors = await this.fetchAllPages<AhaCompetitorSummary>(
+        `/api/v1/products/${encodeURIComponent(product_id)}/competitors`,
+        "competitors"
+      );
+
+      const summaries = competitors.map((c) => ({
+        id: String(c.id),
+        name: c.name,
+      }));
+
+      return {
+        content: [{ type: "text" as const, text: JSON.stringify(summaries, null, 2) }],
+      };
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      throw new McpError(ErrorCode.InternalError, `Failed to list competitors: ${errorMessage}`);
+    }
+  }
+
+  async handleGetCompetitor(request: any) {
+    const { id } = request.params.arguments as { id: string };
+
+    if (!id) {
+      throw new McpError(ErrorCode.InvalidParams, "Competitor id is required");
+    }
+
+    try {
+      const data = await this.restRequest<any>(
+        `/api/v1/competitors/${encodeURIComponent(id)}`,
+        "GET"
+      );
+      const c = data.competitor;
+
+      if (!c) {
+        return {
+          content: [{ type: "text" as const, text: `No competitor found for id ${id}` }],
+        };
+      }
+
+      const result: Record<string, unknown> = {
+        id: String(c.id),
+        reference_num: c.reference_num,
+        name: c.name,
+        description: c.description?.body ?? null,
+        url: c.url ?? null,
+        created_at: c.created_at ?? null,
+        updated_at: c.updated_at ?? null,
+      };
+
+      return {
+        content: [{ type: "text" as const, text: JSON.stringify(result, null, 2) }],
+      };
+    } catch (error) {
+      if (error instanceof McpError) throw error;
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      if (errorMessage.includes("(404)") || errorMessage.includes("404")) {
+        throw new McpError(ErrorCode.InvalidParams, `Competitor not found: ${id}`);
+      }
+      throw new McpError(ErrorCode.InternalError, `Failed to get competitor: ${errorMessage}`);
+    }
+  }
+
+  async handleUpdateCompetitor(request: any) {
+    const { product_id, id, name, color } = request.params.arguments as {
+      product_id: string;
+      id: string;
+      name?: string;
+      color?: number;
+    };
+
+    if (!product_id) {
+      throw new McpError(ErrorCode.InvalidParams, "product_id is required");
+    }
+
+    if (!id) {
+      throw new McpError(ErrorCode.InvalidParams, "Competitor id is required");
+    }
+
+    if (name === undefined && color === undefined) {
+      throw new McpError(
+        ErrorCode.InvalidParams,
+        "At least one of name or color must be provided"
+      );
+    }
+
+    const payload: { [key: string]: unknown } = {};
+    if (name !== undefined) payload.name = name;
+    if (color !== undefined) payload.color = color;
+
+    try {
+      const data = await this.restRequest<any>(
+        `/api/v1/products/${encodeURIComponent(product_id)}/competitors/${encodeURIComponent(id)}`,
+        "PUT",
+        { competitor: payload }
+      );
+      const c = data.competitor;
+
+      const result: Record<string, unknown> = {
+        id: String(c.id),
+        reference_num: c.reference_num,
+        name: c.name,
+        description: c.description?.body ?? null,
+        url: c.url ?? null,
+        created_at: c.created_at ?? null,
+        updated_at: c.updated_at ?? null,
+      };
+
+      return {
+        content: [{ type: "text" as const, text: JSON.stringify(result, null, 2) }],
+      };
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      throw new McpError(ErrorCode.InternalError, `Failed to update competitor: ${errorMessage}`);
+    }
+  }
+
+  async handleCreateCompetitor(request: any) {
+    const { product_id, name, color } = request.params.arguments as {
+      product_id: string;
+      name: string;
+      color?: number;
+    };
+
+    if (!product_id) {
+      throw new McpError(ErrorCode.InvalidParams, "product_id is required");
+    }
+
+    if (!name) {
+      throw new McpError(ErrorCode.InvalidParams, "name is required");
+    }
+
+    const payload: { [key: string]: unknown } = {
+      name,
+      color: color ?? 29647,
+    };
+
+    try {
+      const data = await this.restRequest<any>(
+        `/api/v1/products/${encodeURIComponent(product_id)}/competitors`,
+        "POST",
+        { competitor: payload }
+      );
+      const c = data.competitor;
+
+      const result: Record<string, unknown> = {
+        id: String(c.id),
+        reference_num: c.reference_num,
+        name: c.name,
+        description: c.description?.body ?? null,
+        url: c.url ?? null,
+        created_at: c.created_at ?? null,
+        updated_at: c.updated_at ?? null,
+      };
+
+      return {
+        content: [{ type: "text" as const, text: JSON.stringify(result, null, 2) }],
+      };
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      throw new McpError(ErrorCode.InternalError, `Failed to create competitor: ${errorMessage}`);
     }
   }
 

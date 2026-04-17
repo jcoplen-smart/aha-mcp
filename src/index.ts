@@ -505,6 +505,71 @@ class AhaMcp {
     );
 
     this.server.registerTool(
+      "list_competitors",
+      {
+        description:
+          "List all competitor records in an Aha! workspace. Returns each competitor's numeric ID and name. Always call this first to discover the numeric ID needed by get_competitor and update_competitor — the competitors API does not accept reference numbers for individual record access.",
+        inputSchema: {
+          product_id: z.string().describe("Workspace key (e.g. LUM)"),
+        },
+      },
+      (args) =>
+        this.handlers.handleListCompetitors({ params: { arguments: args } })
+    );
+
+    this.server.registerTool(
+      "get_competitor",
+      {
+        description:
+          "Get a specific Aha! competitor record by numeric ID. Returns the competitor name, full HTML description body, reference number, and timestamps. Use list_competitors first to find the numeric ID for a named competitor. Call this before update_competitor to read the current description content.",
+        inputSchema: {
+          id: z.string().describe("Numeric ID of the competitor, as returned by list_competitors"),
+        },
+      },
+      (args) =>
+        this.handlers.handleGetCompetitor({ params: { arguments: args } })
+    );
+
+    this.server.registerTool(
+      "update_competitor",
+      {
+        description:
+          "Update an Aha! competitor record by numeric ID. Accepts a new name and/or color. Returns the updated record. Use list_competitors to find the numeric ID. At least one field must be provided.",
+        inputSchema: {
+          product_id: z.string().describe("Workspace key (e.g. LUM)"),
+          id: z.string().describe("Numeric ID of the competitor to update"),
+          name: z.string().optional().describe("New competitor name"),
+          color: z
+            .number()
+            .optional()
+            .describe("Numeric color value for the competitor (e.g. 29647)."),
+        },
+      },
+      (args) =>
+        this.handlers.handleUpdateCompetitor({ params: { arguments: args } })
+    );
+
+    this.server.registerTool(
+      "create_competitor",
+      {
+        description:
+          "Create a new competitor record in an Aha! workspace. Requires a name and workspace product_id. Returns the newly created record including its numeric ID. Use this when adding a competitor that does not yet exist in Aha! — use update_competitor instead if the record already exists.",
+        inputSchema: {
+          product_id: z.string().describe("Workspace key (e.g. LUM)"),
+          name: z.string().describe("Competitor name (e.g. Pear Deck)"),
+          color: z
+            .number()
+            .optional()
+            .describe(
+              "Numeric color value for the competitor (e.g. 29647). Defaults to 29647 if omitted."
+            ),
+        },
+      },
+      (args) =>
+        this.handlers.handleCreateCompetitor({ params: { arguments: args } })
+    );
+
+    this.server.registerTool(
       "list_workflow_statuses",
       {
         description:

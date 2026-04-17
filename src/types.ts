@@ -163,3 +163,9 @@ export interface DeleteRecordLinkResult {
   success: boolean;
   link_id: string;
 }
+
+export interface AhaCompetitorSummary {
+  id: string | number;
+  reference_num: string;
+  name: string;
+}
