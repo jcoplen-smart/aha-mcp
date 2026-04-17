@@ -1,0 +1,502 @@
+{
+  "_meta": {
+    "exported_at": "2026-04-17",
+    "how_to_regenerate": "See aha_custom_field_schema_README.md"
+  },
+  "custom_fields_by_record_type": {
+    "Persona": [
+      {
+        "name": "Education",
+        "api_key": "education",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Experience",
+        "api_key": "experience",
+        "field_type": "Number field",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Influence",
+        "api_key": "influence",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Product knowledge",
+        "api_key": "product_knowledge",
+        "field_type": "Predefined choice list",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Likes",
+        "api_key": "likes",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Dislikes",
+        "api_key": "dislikes",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Description",
+        "api_key": "description",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Responsibilities",
+        "api_key": "responsibilities",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Goals",
+        "api_key": "goals",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Skills",
+        "api_key": "skills",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Trusts information from",
+        "api_key": "trusts_information_from",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Goals and Needs",
+        "api_key": "goals_and_needs",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Motivation",
+        "api_key": "motivation",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Pain Points",
+        "api_key": "pain_points",
+        "field_type": "Note",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Voice",
+        "api_key": "voice",
+        "field_type": "Text field",
+        "used_in_layouts": [],
+        "used_in_products": []
+      }
+    ],
+    "Competitor": [
+      {
+        "name": "Description",
+        "api_key": "description",
+        "field_type": "Note",
+        "used_in_layouts": [
+          "Competitors layout"
+        ],
+        "used_in_products": [
+          "LUM (Lumio)"
+        ]
+      },
+      {
+        "name": "Customer Feedback Forum",
+        "api_key": "customer_feedback_forum",
+        "field_type": "URL/Email field",
+        "used_in_layouts": [
+          "Competitors layout"
+        ],
+        "used_in_products": [
+          "LUM (Lumio)"
+        ]
+      },
+      {
+        "name": "Announcements/Blog",
+        "api_key": "announcementsblog",
+        "field_type": "URL/Email field",
+        "used_in_layouts": [
+          "Competitors layout"
+        ],
+        "used_in_products": [
+          "LUM (Lumio)"
+        ]
+      },
+      {
+        "name": "Competitor Type",
+        "api_key": "competitor_type",
+        "field_type": "Predefined choice list",
+        "used_in_layouts": [
+          "Competitors layout"
+        ],
+        "used_in_products": [
+          "LUM (Lumio)"
+        ]
+      }
+    ],
+    "Release": [
+      {
+        "name": "Investment Category",
+        "api_key": "release",
+        "field_type": "Predefined choice list",
+        "used_in_layouts": [],
+        "used_in_products": []
+      }
+    ],
+    "Feature": [
+      {
+        "name": "Sprint",
+        "api_key": "sprint",
+        "field_type": "Editable choice list",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "UserVoice Idea",
+        "api_key": "uservoice_idea",
+        "field_type": "URL/Email field",
+        "used_in_layouts": [
+          "Lumio Features Layout"
+        ],
+        "used_in_products": [
+          "STU (Studio)",
+          "PL (Platform)",
+          "AP (ID + AI)",
+          "ACT (Activities)",
+          "DS (Library & Document Services)",
+          "FL (Flows)",
+          "DO (DevOps)",
+          "DAT (Data & Analytics)",
+          "CP (Content & Partnerships)",
+          "COMPANY (SMART)"
+        ]
+      },
+      {
+        "name": "Review as a group",
+        "api_key": "review_as_a_group_flag",
+        "field_type": "Predefined choice list",
+        "used_in_layouts": [
+          "Lumio Features Layout"
+        ],
+        "used_in_products": [
+          "STU (Studio)",
+          "PL (Platform)",
+          "AP (ID + AI)",
+          "ACT (Activities)",
+          "DS (Library & Document Services)",
+          "FL (Flows)",
+          "DO (DevOps)",
+          "DAT (Data & Analytics)",
+          "CP (Content & Partnerships)",
+          "COMPANY (SMART)"
+        ]
+      },
+      {
+        "name": "HEART Worksheet",
+        "api_key": "heart_worksheet",
+        "field_type": "URL/Email field",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Ideation & Scoping Board",
+        "api_key": "ideation__scoping_board",
+        "field_type": "URL/Email field",
+        "used_in_layouts": [
+          "Lumio Features Layout"
+        ],
+        "used_in_products": [
+          "STU (Studio)",
+          "PL (Platform)",
+          "AP (ID + AI)",
+          "ACT (Activities)",
+          "DS (Library & Document Services)",
+          "FL (Flows)",
+          "DO (DevOps)",
+          "DAT (Data & Analytics)",
+          "CP (Content & Partnerships)",
+          "COMPANY (SMART)"
+        ]
+      },
+      {
+        "name": "PM Lead",
+        "api_key": "pm_owner",
+        "field_type": "Users field",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "UX Lead",
+        "api_key": "ux_lead",
+        "field_type": "Users field",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Dev Lead",
+        "api_key": "dev_lead",
+        "field_type": "Users field",
+        "used_in_layouts": [],
+        "used_in_products": []
+      },
+      {
+        "name": "Priority",
+        "api_key": "priority",
+        "field_type": "Number field",
+        "used_in_layouts": [
+          "Lumio Features Layout"
+        ],
+        "used_in_products": [
+          "STU (Studio)",
+          "PL (Platform)",
+          "AP (ID + AI)",
+          "ACT (Activities)",
+          "DS (Library & Document Services)",
+          "FL (Flows)",
+          "DO (DevOps)",
+          "DAT (Data & Analytics)",
+          "CP (Content & Partnerships)",
+          "COMPANY (SMART)"
+        ]
+      },
+      {
+        "name": "UX Status",
+        "api_key": "ux_status",
+        "field_type": "Predefined choice list",
+        "used_in_layouts": [
+          "Lumio Features Layout"
+        ],
+        "used_in_products": [
+          "STU (Studio)",
+          "PL (Platform)",
+          "AP (ID + AI)",
+          "ACT (Activities)",
+          "DS (Library & Document Services)",
+          "FL (Flows)",
+          "DO (DevOps)",
+          "DAT (Data & Analytics)",
+          "CP (Content & Partnerships)",
+          "COMPANY (SMART)"
+        ]
+      },
+      {
+        "name": "Team",
+        "api_key": "team",
+        "field_type": "Predefined choice list",
+        "used_in_layouts": [
+          "Lumio Features Layout"
+        ],
+        "used_in_products": [
+          "STU (Studio)",
+          "PL (Platform)",
+          "AP (ID + AI)",
+          "ACT (Activities)",
+          "DS (Library & Document Services)",
+          "FL (Flows)",
+          "DO (DevOps)",
+          "DAT (Data & Analytics)",
+          "CP (Content & Partnerships)",
+          "COMPANY (SMART)"
+        ]
+      }
+    ],
+    "Epic": [
+      {
+        "name": "Sprint",
+        "api_key": "sprint",
+        "field_type": "Editable choice list",
+        "used_in_layouts": [
+          "Lumio Epic Layout"
+        ],
+        "used_in_products": [
+          "STU (Studio)",
+          "PL (Platform)",
+          "AP (ID + AI)",
+          "ACT (Activities)",
+          "DS (Library & Document Services)",
+          "FL (Flows)",
+          "DO (DevOps)",
+          "DAT (Data & Analytics)",
+          "CP (Content & Partnerships)",
+          "COMPANY (SMART)"
+        ]
+      },
+      {
+        "name": "UserVoice Idea",
+        "api_key": "uservoice_idea",
+        "field_type": "URL/Email field",
+        "used_in_layouts": [
+          "Lumio Epic Layout"
+        ],
+        "used_in_products": [
+          "STU (Studio)",
+          "PL (Platform)",
+          "AP (ID + AI)",
+          "ACT (Activities)",
+          "DS (Library & Document Services)",
+          "FL (Flows)",
+          "DO (DevOps)",
+          "DAT (Data & Analytics)",
+          "CP (Content & Partnerships)",
+          "COMPANY (SMART)"
+        ]
+      },
+      {
+        "name": "PM Lead",
+        "api_key": "pm_lead",
+        "field_type": "Users field",
+        "used_in_layouts": [
+          "Lumio Epic Layout"
+        ],
+        "used_in_products": [
+          "STU (Studio)",
+          "PL (Platform)",
+          "AP (ID + AI)",
+          "ACT (Activities)",
+          "DS (Library & Document Services)",
+          "FL (Flows)",
+          "DO (DevOps)",
+          "DAT (Data & Analytics)",
+          "CP (Content & Partnerships)",
+          "COMPANY (SMART)"
+        ]
+      },
+      {
+        "name": "Dev Lead",
+        "api_key": "dev_lead",
+        "field_type": "Users field",
+        "used_in_layouts": [
+          "Lumio Epic Layout"
+        ],
+        "used_in_products": [
+          "STU (Studio)",
+          "PL (Platform)",
+          "AP (ID + AI)",
+          "ACT (Activities)",
+          "DS (Library & Document Services)",
+          "FL (Flows)",
+          "DO (DevOps)",
+          "DAT (Data & Analytics)",
+          "CP (Content & Partnerships)",
+          "COMPANY (SMART)"
+        ]
+      },
+      {
+        "name": "Ideation & Scoping Board",
+        "api_key": "ideation__scoping_board",
+        "field_type": "URL/Email field",
+        "used_in_layouts": [
+          "Lumio Epic Layout"
+        ],
+        "used_in_products": [
+          "STU (Studio)",
+          "PL (Platform)",
+          "AP (ID + AI)",
+          "ACT (Activities)",
+          "DS (Library & Document Services)",
+          "FL (Flows)",
+          "DO (DevOps)",
+          "DAT (Data & Analytics)",
+          "CP (Content & Partnerships)",
+          "COMPANY (SMART)"
+        ]
+      },
+      {
+        "name": "HEART Worksheet",
+        "api_key": "heart_worksheet",
+        "field_type": "URL/Email field",
+        "used_in_layouts": [
+          "Lumio Epic Layout"
+        ],
+        "used_in_products": [
+          "STU (Studio)",
+          "PL (Platform)",
+          "AP (ID + AI)",
+          "ACT (Activities)",
+          "DS (Library & Document Services)",
+          "FL (Flows)",
+          "DO (DevOps)",
+          "DAT (Data & Analytics)",
+          "CP (Content & Partnerships)",
+          "COMPANY (SMART)"
+        ]
+      },
+      {
+        "name": "Priority",
+        "api_key": "priority",
+        "field_type": "Number field",
+        "used_in_layouts": [
+          "Lumio Epic Layout"
+        ],
+        "used_in_products": [
+          "STU (Studio)",
+          "PL (Platform)",
+          "AP (ID + AI)",
+          "ACT (Activities)",
+          "DS (Library & Document Services)",
+          "FL (Flows)",
+          "DO (DevOps)",
+          "DAT (Data & Analytics)",
+          "CP (Content & Partnerships)",
+          "COMPANY (SMART)"
+        ]
+      },
+      {
+        "name": "Review as a group",
+        "api_key": "review_as_a_group",
+        "field_type": "Predefined choice list",
+        "used_in_layouts": [
+          "Lumio Epic Layout"
+        ],
+        "used_in_products": [
+          "STU (Studio)",
+          "PL (Platform)",
+          "AP (ID + AI)",
+          "ACT (Activities)",
+          "DS (Library & Document Services)",
+          "FL (Flows)",
+          "DO (DevOps)",
+          "DAT (Data & Analytics)",
+          "CP (Content & Partnerships)",
+          "COMPANY (SMART)"
+        ]
+      }
+    ],
+    "Initiative": [
+      {
+        "name": "Rank",
+        "api_key": "rank",
+        "field_type": "Number field",
+        "used_in_layouts": [
+          "Initiatives layout"
+        ],
+        "used_in_products": [
+          "LUM (Lumio)"
+        ]
+      }
+    ]
+  }
+}
