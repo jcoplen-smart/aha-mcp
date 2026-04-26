@@ -585,6 +585,7 @@ class AhaMcp {
           competitor_id: z.string().describe("Reference number of the competitor to update (e.g. LUM-C-1)"),
           name: z.string().optional().describe("New competitor name"),
           subtitle: z.string().optional().describe("Subtitle (standard top-level field, not a custom field)"),
+          color: z.number().optional().describe("Numeric color value for the competitor (e.g. 29647)."),
           custom_fields: z
             .record(z.string(), z.unknown())
             .optional()

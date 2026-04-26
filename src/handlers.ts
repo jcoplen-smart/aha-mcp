@@ -1769,11 +1769,12 @@ export class Handlers {
   }
 
   async handleUpdateCompetitor(request: any) {
-    const { product_id, competitor_id, name, subtitle, custom_fields } = request.params.arguments as {
+    const { product_id, competitor_id, name, subtitle, color, custom_fields } = request.params.arguments as {
       product_id: string;
       competitor_id: string;
       name?: string;
       subtitle?: string;
+      color?: number;
       custom_fields?: Record<string, unknown>;
     };
 
@@ -1785,23 +1786,29 @@ export class Handlers {
       throw new McpError(ErrorCode.InvalidParams, "competitor_id is required");
     }
 
-    if (name === undefined && subtitle === undefined && custom_fields === undefined) {
+    if (name === undefined && subtitle === undefined && color === undefined && custom_fields === undefined) {
       throw new McpError(
         ErrorCode.InvalidParams,
-        "At least one of name, subtitle, or custom_fields must be provided"
+        "At least one of name, subtitle, color, or custom_fields must be provided"
       );
     }
 
-    // Resolve reference_num to numeric ID for the PUT path
-    const getData = await this.restRequest<any>(
-      `/api/v1/competitors/${encodeURIComponent(competitor_id)}`,
-      "GET"
-    );
-    const numericId = String(getData.competitor.id);
+    let numericId: string;
+    try {
+      const getData = await this.restRequest<any>(
+        `/api/v1/competitors/${encodeURIComponent(competitor_id)}`,
+        "GET"
+      );
+      numericId = String(getData.competitor.id);
+    } catch (error) {
+      const errorMessage = error instanceof McpError ? error.message : (error instanceof Error ? error.message : String(error));
+      throw new McpError(ErrorCode.InternalError, `Failed to resolve competitor: ${errorMessage}`);
+    }
 
     const payload: { [key: string]: unknown } = {};
     if (name !== undefined) payload.name = name;
     if (subtitle !== undefined) payload.subtitle = subtitle;
+    if (color !== undefined) payload.color = color;
     if (custom_fields !== undefined) payload.custom_fields = custom_fields;
 
     try {
