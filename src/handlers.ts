@@ -1723,7 +1723,7 @@ export class Handlers {
 
     try {
       const competitors = await this.fetchAllPages<AhaCompetitorSummary>(
-        `/api/v1/products/${encodeURIComponent(product_id)}/competitors?fields=*`,
+        `/api/v1/products/${encodeURIComponent(product_id)}/competitors?fields=id,reference_num,name`,
         "competitors"
       );
 
