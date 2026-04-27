@@ -34,8 +34,9 @@ function loadCustomFieldSchema(): Record<string, Array<{ name: string; api_key: 
 }
 
 const customFieldSchema = loadCustomFieldSchema();
+const rawCompetitorFields = customFieldSchema["Competitor"];
 const competitorFields: Array<{ name: string; api_key: string; field_type: string }> =
-  customFieldSchema["Competitor"] ?? [];
+  Array.isArray(rawCompetitorFields) ? rawCompetitorFields : [];
 
 const verifiedAhaApiToken = AHA_API_TOKEN;
 const verifiedAhaDomain = AHA_DOMAIN;

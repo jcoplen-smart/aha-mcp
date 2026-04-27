@@ -1853,6 +1853,7 @@ export class Handlers {
         content: [{ type: "text" as const, text: JSON.stringify(result, null, 2) }],
       };
     } catch (error) {
+      if (error instanceof McpError) throw error;
       const errorMessage = error instanceof Error ? error.message : String(error);
       throw new McpError(ErrorCode.InternalError, `Failed to update competitor: ${errorMessage}`);
     }
