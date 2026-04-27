@@ -1702,6 +1702,18 @@ export class Handlers {
     }
   }
 
+  private async resolveCompetitorNumericId(product_id: string, competitor_id: string): Promise<string> {
+    const competitors = await this.fetchAllPages<AhaCompetitorSummary>(
+      `/api/v1/products/${encodeURIComponent(product_id)}/competitors?fields=id,reference_num`,
+      "competitors"
+    );
+    const match = competitors.find((c) => c.reference_num === competitor_id);
+    if (!match) {
+      throw new McpError(ErrorCode.InvalidParams, `Competitor not found: ${competitor_id}`);
+    }
+    return String(match.id);
+  }
+
   async handleListCompetitors(request: any) {
     const { product_id } = request.params.arguments as { product_id: string };
 
@@ -1731,15 +1743,23 @@ export class Handlers {
   }
 
   async handleGetCompetitor(request: any) {
-    const { competitor_id } = request.params.arguments as { competitor_id: string };
+    const { product_id, competitor_id } = request.params.arguments as {
+      product_id: string;
+      competitor_id: string;
+    };
+
+    if (!product_id) {
+      throw new McpError(ErrorCode.InvalidParams, "product_id is required");
+    }
 
     if (!competitor_id) {
       throw new McpError(ErrorCode.InvalidParams, "competitor_id is required");
     }
 
     try {
+      const numericId = await this.resolveCompetitorNumericId(product_id, competitor_id);
       const data = await this.restRequest<any>(
-        `/api/v1/competitors/${encodeURIComponent(competitor_id)}`,
+        `/api/v1/competitors/${encodeURIComponent(numericId)}`,
         "GET"
       );
       const c = data.competitor;
@@ -1770,11 +1790,7 @@ export class Handlers {
       };
     } catch (error) {
       if (error instanceof McpError) throw error;
-      const errorMessage = error instanceof Error ? error.message : String(error);
-      if (errorMessage.includes("(404)") || errorMessage.includes("404")) {
-        throw new McpError(ErrorCode.InvalidParams, `Competitor not found: ${competitor_id}`);
-      }
-      throw new McpError(ErrorCode.InternalError, `Failed to get competitor: ${errorMessage}`);
+      throw new McpError(ErrorCode.InternalError, `Failed to get competitor: ${error instanceof Error ? error.message : String(error)}`);
     }
   }
 
@@ -1803,18 +1819,6 @@ export class Handlers {
       );
     }
 
-    let numericId: string;
-    try {
-      const getData = await this.restRequest<any>(
-        `/api/v1/competitors/${encodeURIComponent(competitor_id)}`,
-        "GET"
-      );
-      numericId = String(getData.competitor.id);
-    } catch (error) {
-      const errorMessage = error instanceof McpError ? error.message : (error instanceof Error ? error.message : String(error));
-      throw new McpError(ErrorCode.InternalError, `Failed to resolve competitor: ${errorMessage}`);
-    }
-
     const payload: { [key: string]: unknown } = {};
     if (name !== undefined) payload.name = name;
     if (subtitle !== undefined) payload.subtitle = subtitle;
@@ -1822,6 +1826,7 @@ export class Handlers {
     if (custom_fields !== undefined) payload.custom_fields = custom_fields;
 
     try {
+      const numericId = await this.resolveCompetitorNumericId(product_id, competitor_id);
       const data = await this.restRequest<any>(
         `/api/v1/products/${encodeURIComponent(product_id)}/competitors/${encodeURIComponent(numericId)}`,
         "PUT",

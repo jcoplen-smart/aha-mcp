@@ -566,8 +566,9 @@ class AhaMcp {
       "get_competitor",
       {
         description:
-          `Get a specific Aha! competitor record by reference number (e.g. LUM-C-1). Returns standard fields (name, subtitle) and the full custom_fields array showing each field's key, name, value, and type. Use this before update_competitor to inspect current values. Known custom field keys for this workspace: ${competitorFieldHint}.`,
+          `Get a specific Aha! competitor record by reference number (e.g. LUM-C-1). Requires the workspace product key. Returns standard fields (name, subtitle) and the full custom_fields array showing each field's key, name, value, and type. Use this before update_competitor to inspect current values. Known custom field keys for this workspace: ${competitorFieldHint}.`,
         inputSchema: {
+          product_id: z.string().describe("Workspace key (e.g. LUM)"),
           competitor_id: z.string().describe("Reference number of the competitor (e.g. LUM-C-1), as returned by list_competitors"),
         },
       },
