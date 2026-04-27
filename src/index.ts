@@ -98,11 +98,11 @@ class AhaMcp {
       "get_record",
       {
         description:
-          "Get an Aha! feature or requirement by reference number. Returns name, description, workflow status (name, complete flag), and linked epic. Use this to read current feature state before updating, or to confirm status after a update_feature call. For epics, use get_epic instead.",
+          "Get an Aha! feature or requirement by reference number. This is the only tool for reading features — there is no separate get_feature tool. Returns name, description, workflow status (name, complete flag), linked epic, and custom fields. Use this to read current feature state before updating, or to confirm status after an update_feature call. For epics, use get_epic instead.",
         inputSchema: {
           reference_num: z
             .string()
-            .describe("Reference number (e.g., DEVELOP-123 or ADT-123-1)"),
+            .describe("Feature or requirement reference number as shown in the Aha! UI (e.g. DEVELOP-123 for a feature, or ADT-123-1 for a requirement). Always use the reference number visible in the UI — never a numeric ID."),
         },
       },
       (args) => this.handlers.handleGetRecord({ params: { arguments: args } })
@@ -418,9 +418,9 @@ class AhaMcp {
     this.server.registerTool(
       "get_epic",
       {
-        description: "Get an Aha! epic by reference number",
+        description: "Get an Aha! epic by reference number. Returns name, description, workflow status, linked initiative, goals, and custom fields. Use this to read current epic state before updating. The only required parameter is reference_num.",
         inputSchema: {
-          reference_num: z.string().describe("Epic reference number"),
+          reference_num: z.string().describe("Epic reference number as shown in the Aha! UI (e.g. AP-E-22 or STU-E-5). Always pass the reference number — never a numeric ID. The parameter name is reference_num, not epicId or epic_id."),
         },
       },
       (args) =>
