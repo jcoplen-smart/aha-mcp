@@ -257,6 +257,15 @@ export class Handlers {
         };
       }
 
+      if (Array.isArray(record.custom_fields)) {
+        result.custom_fields = (record.custom_fields as CompetitorCustomField[]).map((f) => ({
+          key: f.key,
+          name: f.name,
+          value: f.value ?? null,
+          type: f.type,
+        }));
+      }
+
       return {
         content: [
           {
