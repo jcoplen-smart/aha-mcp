@@ -56,10 +56,7 @@ Only create a PR when the user explicitly asks. When asked:
    gh pr create --base main --title "feat: ..." --body "..."
    ```
    PR body should include: what changed, why, and any known risks or gaps.
-4. Trigger Codex review:
-   ```bash
-   gh pr comment <number> --repo jcoplen-smart/aha-mcp --body "@codex review"
-   ```
+4. Return the PR URL. **Do not post `@codex review`** — Codex triggers automatically on PR open.
 
 ### Responding to Code Review Feedback
 
