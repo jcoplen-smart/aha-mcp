@@ -1707,6 +1707,7 @@ export class Handlers {
       );
 
       const summaries = competitors.map((c) => ({
+        id: String(c.id),
         reference_num: c.reference_num,
         name: c.name,
       }));
