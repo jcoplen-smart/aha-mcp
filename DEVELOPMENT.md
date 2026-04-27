@@ -336,9 +336,11 @@ List all competitors in a workspace.
 Get a single competitor by reference number.
 
 - **Required params**
+  - `product_id: string` (workspace key, e.g. `LUM`)
   - `competitor_id: string` (reference number, e.g. `LUM-C-1`)
 - **Backend**
-  - REST `GET /api/v1/competitors/{competitor_id}`
+  - Resolves `competitor_id` to numeric ID via `GET /api/v1/products/{product_id}/competitors?fields=id,reference_num`
+  - REST `GET /api/v1/competitors/{numeric_id}`
 - **Returns**
   - `id`, `reference_num`, `name`, `subtitle`, `custom_fields` (raw array — each element has `key`, `name`, `value`, `type`)
 
@@ -354,7 +356,7 @@ Update an existing competitor by reference number.
   - `subtitle?: string` — standard top-level field
   - `custom_fields?: object` — flat key/value pairs (partial updates are safe; unincluded fields are preserved)
 - **Backend**
-  - Resolves `competitor_id` (reference num) to numeric ID via `GET /api/v1/competitors/{competitor_id}`
+  - Resolves `competitor_id` (reference num) to numeric ID via `GET /api/v1/products/{product_id}/competitors?fields=id,reference_num`
   - PUT `PUT /api/v1/products/{product_id}/competitors/{numeric_id}`
 - **Returns**
   - `id`, `reference_num`, `name`, `subtitle`, `custom_fields`
