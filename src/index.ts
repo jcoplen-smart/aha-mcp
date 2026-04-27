@@ -3,6 +3,9 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
 import { GraphQLClient } from "graphql-request";
+import { readFileSync } from "fs";
+import { resolve } from "path";
+import { fileURLToPath } from "url";
 import { Handlers } from "./handlers.js";
 
 const AHA_API_TOKEN = process.env.AHA_API_TOKEN;
@@ -16,6 +19,25 @@ if (!AHA_DOMAIN) {
   throw new Error("AHA_DOMAIN environment variable is required");
 }
 
+// Load custom field schema — used to enrich tool descriptions at startup
+function loadCustomFieldSchema(): Record<string, Array<{ name: string; api_key: string; field_type: string }>> {
+  const schemaPath = process.env.AHA_CUSTOM_FIELD_SCHEMA_PATH
+    ?? resolve(fileURLToPath(import.meta.url), "../../config/aha_custom_field_schema.json");
+  try {
+    const raw = readFileSync(schemaPath, "utf-8");
+    const parsed = JSON.parse(raw);
+    return parsed.custom_fields_by_record_type ?? {};
+  } catch {
+    console.error(`[aha-mcp] Warning: could not load custom field schema from ${schemaPath}`);
+    return {};
+  }
+}
+
+const customFieldSchema = loadCustomFieldSchema();
+const rawCompetitorFields = customFieldSchema["Competitor"];
+const competitorFields: Array<{ name: string; api_key: string; field_type: string }> =
+  Array.isArray(rawCompetitorFields) ? rawCompetitorFields : [];
+
 const verifiedAhaApiToken = AHA_API_TOKEN;
 const verifiedAhaDomain = AHA_DOMAIN;
 
@@ -27,6 +49,18 @@ const client = new GraphQLClient(
     },
   }
 );
+
+// Build a short field-key hint for use in tool descriptions
+function buildCompetitorFieldHint(): string {
+  if (competitorFields.length === 0) {
+    return "description (Note — HTML), hq (Text), customer_feedback_forum (URL), announcementsblog (URL — no underscore), competitor_type (Predefined choice list)";
+  }
+  return competitorFields
+    .map((f) => `${f.name} key="${f.api_key}" (${f.field_type})`)
+    .join(", ");
+}
+
+const competitorFieldHint = buildCompetitorFieldHint();
 
 class AhaMcp {
   private server: McpServer;
@@ -258,7 +292,7 @@ class AhaMcp {
       "update_epic",
       {
         description:
-          "Update an Aha! epic by reference number; can update name, description, and/or linked release or initiative. Also supports setting `workflow_status` by name — status names are workspace-specific, so call `list_workflow_statuses` first if you are unsure of the valid values. Use `get_epic` to retrieve the current epic state before updating.",
+          "Update an Aha! epic by reference number; can update name, description, custom fields, and/or linked release or initiative. Also supports setting `workflow_status` by name — status names are workspace-specific, so call `list_workflow_statuses` first if you are unsure of the valid values. Pass `custom_fields` as a flat key/value object — keys must match the `key` property from `get_epic`'s custom_fields array (e.g. { \"uservoice_idea\": \"https://...\", \"priority\": \"24\" }). Use `get_epic` to retrieve current field keys and values before updating.",
         inputSchema: {
           reference_num: z.string().describe("Epic reference number"),
           name: z.string().optional().describe("New epic name"),
@@ -286,6 +320,12 @@ class AhaMcp {
             .describe(
               "Workflow status name to set on this epic. Status names are workspace-specific — call list_workflow_statuses to retrieve valid values."
             ),
+          custom_fields: z
+            .record(z.string(), z.unknown())
+            .optional()
+            .describe(
+              "Flat key/value map of custom field keys to values. Keys must match the `key` property returned by `get_epic`'s custom_fields array (e.g. { \"uservoice_idea\": \"https://...\", \"priority\": \"24\" }). Only included keys are modified."
+            ),
         },
       },
       (args) =>
@@ -296,7 +336,7 @@ class AhaMcp {
       "update_feature",
       {
         description:
-          "Update an Aha! feature by reference number; can update name, description, and/or linked release, epic, initiative, or assignee. Also supports setting `workflow_status` by name — status names are workspace-specific, so call `list_workflow_statuses` first if you are unsure of the valid values. Use `get_record` to retrieve the current feature state before updating.",
+          "Update an Aha! feature by reference number; can update name, description, custom fields, and/or workflow status. Pass `custom_fields` as a flat key/value object — keys must match the `key` property from `get_record`'s custom_fields array. Use `get_record` to retrieve current field keys and values before updating.",
         inputSchema: {
           reference_num: z
             .string()
@@ -329,6 +369,12 @@ class AhaMcp {
             .optional()
             .describe(
               "Workflow status name to set on this feature. Status names are workspace-specific — call list_workflow_statuses to retrieve valid values."
+            ),
+          custom_fields: z
+            .record(z.string(), z.unknown())
+            .optional()
+            .describe(
+              "Flat key/value map of custom field keys to values. Keys must match the `key` property returned by `get_record`'s custom_fields array. Only included keys are modified."
             ),
         },
       },
@@ -508,7 +554,7 @@ class AhaMcp {
       "list_competitors",
       {
         description:
-          "List all competitor records in an Aha! workspace. Returns each competitor's numeric ID and name. Always call this first to discover the numeric ID needed by get_competitor and update_competitor — the competitors API does not accept reference numbers for individual record access.",
+          "List all competitors in an Aha! workspace. Requires the workspace product key (e.g. LUM). Returns each competitor's reference_num and name. Use this to discover reference numbers before calling get_competitor or update_competitor.",
         inputSchema: {
           product_id: z.string().describe("Workspace key (e.g. LUM)"),
         },
@@ -521,9 +567,10 @@ class AhaMcp {
       "get_competitor",
       {
         description:
-          "Get a specific Aha! competitor record by numeric ID. Returns the competitor name, full HTML description body, reference number, and timestamps. Use list_competitors first to find the numeric ID for a named competitor. Call this before update_competitor to read the current description content.",
+          `Get a specific Aha! competitor record by reference number (e.g. LUM-C-1). Requires the workspace product key. Returns standard fields (name, subtitle) and the full custom_fields array showing each field's key, name, value, and type. Use this before update_competitor to inspect current values. Known custom field keys for this workspace: ${competitorFieldHint}.`,
         inputSchema: {
-          id: z.string().describe("Numeric ID of the competitor, as returned by list_competitors"),
+          product_id: z.string().describe("Workspace key (e.g. LUM)"),
+          competitor_id: z.string().describe("Reference number of the competitor (e.g. LUM-C-1), as returned by list_competitors"),
         },
       },
       (args) =>
@@ -534,15 +581,19 @@ class AhaMcp {
       "update_competitor",
       {
         description:
-          "Update an Aha! competitor record by numeric ID. Accepts a new name and/or color. Returns the updated record. Use list_competitors to find the numeric ID. At least one field must be provided.",
+          `Update an existing Aha! competitor by reference number (e.g. LUM-C-1). Accepts standard fields (name, subtitle) and an optional custom_fields object (flat key/value pairs). Known custom field keys: ${competitorFieldHint}. description is a Note field — pass HTML. Call get_competitor first to read current values. At least one field must be provided.`,
         inputSchema: {
           product_id: z.string().describe("Workspace key (e.g. LUM)"),
-          id: z.string().describe("Numeric ID of the competitor to update"),
+          competitor_id: z.string().describe("Reference number of the competitor to update (e.g. LUM-C-1)"),
           name: z.string().optional().describe("New competitor name"),
-          color: z
-            .number()
+          subtitle: z.string().optional().describe("Subtitle (standard top-level field, not a custom field)"),
+          color: z.number().optional().describe("Numeric color value for the competitor (e.g. 29647)."),
+          custom_fields: z
+            .record(z.string(), z.unknown())
             .optional()
-            .describe("Numeric color value for the competitor (e.g. 29647)."),
+            .describe(
+              "Flat key/value object of custom field values to set (e.g. { \"competitor_type\": \"Direct Competitor\", \"hq\": \"Austin, TX\" }). Partial updates are safe — only the keys you include will change."
+            ),
         },
       },
       (args) =>
@@ -553,10 +604,17 @@ class AhaMcp {
       "create_competitor",
       {
         description:
-          "Create a new competitor record in an Aha! workspace. Requires a name and workspace product_id. Returns the newly created record including its numeric ID. Use this when adding a competitor that does not yet exist in Aha! — use update_competitor instead if the record already exists.",
+          `Create a new competitor in an Aha! workspace. Accepts standard fields (name, subtitle) and an optional custom_fields object. Known custom field keys: ${competitorFieldHint}. description is a Note field — pass HTML. Call get_competitor on an existing record to discover keys and current values before creating. Returns the newly created record including its reference_num.`,
         inputSchema: {
           product_id: z.string().describe("Workspace key (e.g. LUM)"),
           name: z.string().describe("Competitor name (e.g. Pear Deck)"),
+          subtitle: z.string().optional().describe("Subtitle (standard top-level field, not a custom field)"),
+          custom_fields: z
+            .record(z.string(), z.unknown())
+            .optional()
+            .describe(
+              "Flat key/value object of custom field values to set (e.g. { \"description\": \"<p>HTML here.</p>\", \"competitor_type\": \"Direct Competitor\" })."
+            ),
           color: z
             .number()
             .optional()

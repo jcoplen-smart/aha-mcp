@@ -169,3 +169,19 @@ export interface AhaCompetitorSummary {
   reference_num: string;
   name: string;
 }
+
+export interface CompetitorCustomField {
+  key: string;
+  name: string;
+  value: string | null;
+  type: string;
+}
+
+export interface Competitor {
+  id: string | number;
+  reference_num: string;
+  name: string;
+  subtitle?: string | null;
+  color?: number;
+  custom_fields?: CompetitorCustomField[];
+}

@@ -64,11 +64,15 @@ Required environment variables:
 - `AHA_API_TOKEN`
 - `AHA_DOMAIN` (workspace subdomain only; code constructs `https://${AHA_DOMAIN}.aha.io/...`)
 
+Optional environment variables:
+
+- `AHA_CUSTOM_FIELD_SCHEMA_PATH` — Absolute or relative path to a custom field schema JSON file. Defaults to `config/aha_custom_field_schema.json`. Generate your own by exporting a custom field report from Aha! (Settings → Account → Custom fields → Export) and running `scripts/parse_custom_fields.py` against the downloaded CSV. The schema is loaded at server startup and used to populate tool description strings. If neither this variable nor the default path resolves, the server starts normally and logs a warning to stderr.
+
 ---
 
-## Current tool inventory (17 tools)
+## Current tool inventory (19 tools)
 
-This fork currently exposes 17 MCP tools.
+This fork currently exposes 19 MCP tools.
 
 > Note: parameter names are listed exactly as currently implemented.
 
@@ -314,6 +318,64 @@ List goals for a product/workspace.
   - Uses internal pagination loop to fetch all pages.
 - **Returns (summary projection)**
   - `id`, `reference_num`, `name`
+
+### 18) `list_competitors`
+
+List all competitors in a workspace.
+
+- **Required params**
+  - `product_id: string` (workspace key, e.g. `LUM`)
+- **Backend**
+  - REST `GET /api/v1/products/{product_id}/competitors?fields=*`
+  - Uses internal pagination loop to fetch all pages.
+- **Returns (summary projection)**
+  - `reference_num`, `name`
+
+### 19) `get_competitor`
+
+Get a single competitor by reference number.
+
+- **Required params**
+  - `product_id: string` (workspace key, e.g. `LUM`)
+  - `competitor_id: string` (reference number, e.g. `LUM-C-1`)
+- **Backend**
+  - Resolves `competitor_id` to numeric ID via `GET /api/v1/products/{product_id}/competitors?fields=id,reference_num`
+  - REST `GET /api/v1/competitors/{numeric_id}`
+- **Returns**
+  - `id`, `reference_num`, `name`, `subtitle`, `custom_fields` (raw array — each element has `key`, `name`, `value`, `type`)
+
+### 20) `update_competitor`
+
+Update an existing competitor by reference number.
+
+- **Required params**
+  - `product_id: string`
+  - `competitor_id: string` (reference number, e.g. `LUM-C-1`)
+- **Optional params**
+  - `name?: string`
+  - `subtitle?: string` — standard top-level field
+  - `custom_fields?: object` — flat key/value pairs (partial updates are safe; unincluded fields are preserved)
+- **Backend**
+  - Resolves `competitor_id` (reference num) to numeric ID via `GET /api/v1/products/{product_id}/competitors?fields=id,reference_num`
+  - PUT `PUT /api/v1/products/{product_id}/competitors/{numeric_id}`
+- **Returns**
+  - `id`, `reference_num`, `name`, `subtitle`, `custom_fields`
+
+### 21) `create_competitor`
+
+Create a new competitor in a workspace.
+
+- **Required params**
+  - `product_id: string`
+  - `name: string`
+- **Optional params**
+  - `subtitle?: string` — standard top-level field
+  - `custom_fields?: object` — flat key/value pairs
+  - `color?: number` — defaults to `29647`
+- **Backend**
+  - REST `POST /api/v1/products/{product_id}/competitors`
+- **Returns**
+  - `id`, `reference_num`, `name`, `subtitle`, `custom_fields`
 
 ---
 

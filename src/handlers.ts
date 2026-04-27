@@ -15,6 +15,7 @@ import {
   AhaFeatureInReleaseSummary,
   AhaEpicInReleaseSummary,
   AhaCompetitorSummary,
+  CompetitorCustomField,
 } from "./types.js";
 import {
   getPageQuery,
@@ -254,6 +255,15 @@ export class Handlers {
           reference_num: record.epic.reference_num,
           name: record.epic.name,
         };
+      }
+
+      if (Array.isArray(record.custom_fields)) {
+        result.custom_fields = (record.custom_fields as CompetitorCustomField[]).map((f) => ({
+          key: f.key,
+          name: f.name,
+          value: f.value ?? null,
+          type: f.type,
+        }));
       }
 
       return {
@@ -606,7 +616,7 @@ export class Handlers {
   }
 
   async handleUpdateFeature(request: any) {
-    const { reference_num, name, description, epic_id, initiative_reference_num, goal_ids, workflow_status } =
+    const { reference_num, name, description, epic_id, initiative_reference_num, goal_ids, workflow_status, custom_fields } =
       request.params.arguments as {
         reference_num: string;
         name?: string;
@@ -615,6 +625,7 @@ export class Handlers {
         initiative_reference_num?: string;
         goal_ids?: string[];
         workflow_status?: string;
+        custom_fields?: Record<string, unknown>;
       };
 
     if (!reference_num) {
@@ -630,11 +641,12 @@ export class Handlers {
       epic_id === undefined &&
       initiative_reference_num === undefined &&
       goal_ids === undefined &&
-      workflow_status === undefined
+      workflow_status === undefined &&
+      custom_fields === undefined
     ) {
       throw new McpError(
         ErrorCode.InvalidParams,
-        "At least one of name, description, epic_id, initiative_reference_num, goal_ids, or workflow_status must be provided"
+        "At least one of name, description, epic_id, initiative_reference_num, goal_ids, workflow_status, or custom_fields must be provided"
       );
     }
 
@@ -664,6 +676,9 @@ export class Handlers {
     if (workflow_status !== undefined) {
       featurePayload.workflow_status = workflow_status;
     }
+    if (custom_fields !== undefined) {
+      featurePayload.custom_fields = custom_fields;
+    }
 
     try {
       const result = await this.restRequest(
@@ -691,7 +706,7 @@ export class Handlers {
   }
 
   async handleUpdateEpic(request: any) {
-    const { reference_num, name, description, initiative_reference_num, goal_ids, workflow_status } =
+    const { reference_num, name, description, initiative_reference_num, goal_ids, workflow_status, custom_fields } =
       request.params.arguments as {
         reference_num: string;
         name?: string;
@@ -699,6 +714,7 @@ export class Handlers {
         initiative_reference_num?: string;
         goal_ids?: string[];
         workflow_status?: string;
+        custom_fields?: Record<string, unknown>;
       };
 
     if (!reference_num) {
@@ -713,11 +729,12 @@ export class Handlers {
       description === undefined &&
       initiative_reference_num === undefined &&
       goal_ids === undefined &&
-      workflow_status === undefined
+      workflow_status === undefined &&
+      custom_fields === undefined
     ) {
       throw new McpError(
         ErrorCode.InvalidParams,
-        "At least one of name, description, initiative_reference_num, goal_ids, or workflow_status must be provided"
+        "At least one of name, description, initiative_reference_num, goal_ids, workflow_status, or custom_fields must be provided"
       );
     }
 
@@ -736,6 +753,9 @@ export class Handlers {
     }
     if (workflow_status !== undefined) {
       epicPayload.workflow_status = { name: workflow_status };
+    }
+    if (custom_fields !== undefined) {
+      epicPayload.custom_fields = custom_fields;
     }
 
     try {
@@ -1682,6 +1702,18 @@ export class Handlers {
     }
   }
 
+  private async resolveCompetitorNumericId(product_id: string, competitor_id: string): Promise<string> {
+    const competitors = await this.fetchAllPages<AhaCompetitorSummary>(
+      `/api/v1/products/${encodeURIComponent(product_id)}/competitors?fields=id,reference_num`,
+      "competitors"
+    );
+    const match = competitors.find((c) => c.reference_num === competitor_id);
+    if (!match) {
+      throw new McpError(ErrorCode.InvalidParams, `Competitor not found: ${competitor_id}`);
+    }
+    return String(match.id);
+  }
+
   async handleListCompetitors(request: any) {
     const { product_id } = request.params.arguments as { product_id: string };
 
@@ -1691,12 +1723,13 @@ export class Handlers {
 
     try {
       const competitors = await this.fetchAllPages<AhaCompetitorSummary>(
-        `/api/v1/products/${encodeURIComponent(product_id)}/competitors`,
+        `/api/v1/products/${encodeURIComponent(product_id)}/competitors?fields=id,reference_num,name`,
         "competitors"
       );
 
       const summaries = competitors.map((c) => ({
         id: String(c.id),
+        reference_num: c.reference_num,
         name: c.name,
       }));
 
@@ -1710,22 +1743,30 @@ export class Handlers {
   }
 
   async handleGetCompetitor(request: any) {
-    const { id } = request.params.arguments as { id: string };
+    const { product_id, competitor_id } = request.params.arguments as {
+      product_id: string;
+      competitor_id: string;
+    };
 
-    if (!id) {
-      throw new McpError(ErrorCode.InvalidParams, "Competitor id is required");
+    if (!product_id) {
+      throw new McpError(ErrorCode.InvalidParams, "product_id is required");
+    }
+
+    if (!competitor_id) {
+      throw new McpError(ErrorCode.InvalidParams, "competitor_id is required");
     }
 
     try {
+      const numericId = await this.resolveCompetitorNumericId(product_id, competitor_id);
       const data = await this.restRequest<any>(
-        `/api/v1/competitors/${encodeURIComponent(id)}`,
+        `/api/v1/competitors/${encodeURIComponent(numericId)}`,
         "GET"
       );
       const c = data.competitor;
 
       if (!c) {
         return {
-          content: [{ type: "text" as const, text: `No competitor found for id ${id}` }],
+          content: [{ type: "text" as const, text: `No competitor found for ${competitor_id}` }],
         };
       }
 
@@ -1733,10 +1774,15 @@ export class Handlers {
         id: String(c.id),
         reference_num: c.reference_num,
         name: c.name,
-        description: c.description?.body ?? null,
-        url: c.url ?? null,
-        created_at: c.created_at ?? null,
-        updated_at: c.updated_at ?? null,
+        subtitle: c.subtitle ?? null,
+        custom_fields: Array.isArray(c.custom_fields)
+          ? (c.custom_fields as CompetitorCustomField[]).map((f) => ({
+              key: f.key,
+              name: f.name,
+              value: f.value ?? null,
+              type: f.type,
+            }))
+          : [],
       };
 
       return {
@@ -1744,44 +1790,45 @@ export class Handlers {
       };
     } catch (error) {
       if (error instanceof McpError) throw error;
-      const errorMessage = error instanceof Error ? error.message : String(error);
-      if (errorMessage.includes("(404)") || errorMessage.includes("404")) {
-        throw new McpError(ErrorCode.InvalidParams, `Competitor not found: ${id}`);
-      }
-      throw new McpError(ErrorCode.InternalError, `Failed to get competitor: ${errorMessage}`);
+      throw new McpError(ErrorCode.InternalError, `Failed to get competitor: ${error instanceof Error ? error.message : String(error)}`);
     }
   }
 
   async handleUpdateCompetitor(request: any) {
-    const { product_id, id, name, color } = request.params.arguments as {
+    const { product_id, competitor_id, name, subtitle, color, custom_fields } = request.params.arguments as {
       product_id: string;
-      id: string;
+      competitor_id: string;
       name?: string;
+      subtitle?: string;
       color?: number;
+      custom_fields?: Record<string, unknown>;
     };
 
     if (!product_id) {
       throw new McpError(ErrorCode.InvalidParams, "product_id is required");
     }
 
-    if (!id) {
-      throw new McpError(ErrorCode.InvalidParams, "Competitor id is required");
+    if (!competitor_id) {
+      throw new McpError(ErrorCode.InvalidParams, "competitor_id is required");
     }
 
-    if (name === undefined && color === undefined) {
+    if (name === undefined && subtitle === undefined && color === undefined && custom_fields === undefined) {
       throw new McpError(
         ErrorCode.InvalidParams,
-        "At least one of name or color must be provided"
+        "At least one of name, subtitle, color, or custom_fields must be provided"
       );
     }
 
     const payload: { [key: string]: unknown } = {};
     if (name !== undefined) payload.name = name;
+    if (subtitle !== undefined) payload.subtitle = subtitle;
     if (color !== undefined) payload.color = color;
+    if (custom_fields !== undefined) payload.custom_fields = custom_fields;
 
     try {
+      const numericId = await this.resolveCompetitorNumericId(product_id, competitor_id);
       const data = await this.restRequest<any>(
-        `/api/v1/products/${encodeURIComponent(product_id)}/competitors/${encodeURIComponent(id)}`,
+        `/api/v1/products/${encodeURIComponent(product_id)}/competitors/${encodeURIComponent(numericId)}`,
         "PUT",
         { competitor: payload }
       );
@@ -1791,25 +1838,33 @@ export class Handlers {
         id: String(c.id),
         reference_num: c.reference_num,
         name: c.name,
-        description: c.description?.body ?? null,
-        url: c.url ?? null,
-        created_at: c.created_at ?? null,
-        updated_at: c.updated_at ?? null,
+        subtitle: c.subtitle ?? null,
+        custom_fields: Array.isArray(c.custom_fields)
+          ? (c.custom_fields as CompetitorCustomField[]).map((f) => ({
+              key: f.key,
+              name: f.name,
+              value: f.value ?? null,
+              type: f.type,
+            }))
+          : [],
       };
 
       return {
         content: [{ type: "text" as const, text: JSON.stringify(result, null, 2) }],
       };
     } catch (error) {
+      if (error instanceof McpError) throw error;
       const errorMessage = error instanceof Error ? error.message : String(error);
       throw new McpError(ErrorCode.InternalError, `Failed to update competitor: ${errorMessage}`);
     }
   }
 
   async handleCreateCompetitor(request: any) {
-    const { product_id, name, color } = request.params.arguments as {
+    const { product_id, name, subtitle, custom_fields, color } = request.params.arguments as {
       product_id: string;
       name: string;
+      subtitle?: string;
+      custom_fields?: Record<string, unknown>;
       color?: number;
     };
 
@@ -1825,6 +1880,8 @@ export class Handlers {
       name,
       color: color ?? 29647,
     };
+    if (subtitle !== undefined) payload.subtitle = subtitle;
+    if (custom_fields !== undefined) payload.custom_fields = custom_fields;
 
     try {
       const data = await this.restRequest<any>(
@@ -1838,10 +1895,15 @@ export class Handlers {
         id: String(c.id),
         reference_num: c.reference_num,
         name: c.name,
-        description: c.description?.body ?? null,
-        url: c.url ?? null,
-        created_at: c.created_at ?? null,
-        updated_at: c.updated_at ?? null,
+        subtitle: c.subtitle ?? null,
+        custom_fields: Array.isArray(c.custom_fields)
+          ? (c.custom_fields as CompetitorCustomField[]).map((f) => ({
+              key: f.key,
+              name: f.name,
+              value: f.value ?? null,
+              type: f.type,
+            }))
+          : [],
       };
 
       return {
