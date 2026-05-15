@@ -259,6 +259,30 @@ Searches for Aha! documents.
 | `PORT`          | Port for SSE transport                      | 3000     |
 | `TRANSPORT`     | Transport type (stdio or sse)               | stdio    |
 
+## Development
+
+### Building from Source
+
+```bash
+npm run build
+```
+
+This will:
+1. Compile TypeScript sources to `build/`
+2. Generate `build/aha_custom_field_schema.json` from `config/custom_field_report.csv`
+3. Create `aha-mcp.zip` deployment package
+
+### Updating Custom Field Schema
+
+When Aha! custom fields change:
+
+1. Export custom fields from Aha! Settings → Account → Custom fields → Export
+2. Save the CSV as `config/custom_field_report.csv` (replace existing file)
+3. Run `npm run build` to regenerate the schema
+4. Commit the updated CSV
+
+The schema JSON is generated during build and should not be committed.
+
 ## Troubleshooting
 
 <details>

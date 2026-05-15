@@ -4,3 +4,4 @@ node_modules/
 .claude/settings.local.json
 .mcp.json
 aha-mcp.zip
+config/aha_custom_field_schema.json

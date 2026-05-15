@@ -34,9 +34,8 @@ archive.on('error', (err) => {
 archive.pipe(output);
 
 // Add directories
-console.log('Packaging build/, config/, and node_modules/...');
+console.log('Packaging build/ and node_modules/...');
 archive.directory('build/', 'build/');
-archive.directory('config/', 'config/');
 archive.directory('node_modules/', 'node_modules/', {
   // Exclude cache and git directories
   ignore: ['**/.cache/**', '**/.git/**', '**/.DS_Store']

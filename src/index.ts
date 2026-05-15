@@ -22,7 +22,7 @@ if (!AHA_DOMAIN) {
 // Load custom field schema — used to enrich tool descriptions at startup
 function loadCustomFieldSchema(): Record<string, Array<{ name: string; api_key: string; field_type: string }>> {
   const schemaPath = process.env.AHA_CUSTOM_FIELD_SCHEMA_PATH
-    ?? resolve(fileURLToPath(import.meta.url), "../../config/aha_custom_field_schema.json");
+    ?? resolve(fileURLToPath(import.meta.url), "../aha_custom_field_schema.json");
   try {
     const raw = readFileSync(schemaPath, "utf-8");
     const parsed = JSON.parse(raw);
