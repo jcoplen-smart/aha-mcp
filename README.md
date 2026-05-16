@@ -269,19 +269,18 @@ npm run build
 
 This will:
 1. Compile TypeScript sources to `build/`
-2. Generate `build/aha_custom_field_schema.json` from `config/custom_field_report.csv`
+2. Fetch custom field definitions from Aha! API and cache to `build/aha_custom_field_schema.json` (30-day TTL)
 3. Create `aha-mcp.zip` deployment package
 
-### Updating Custom Field Schema
+### Custom Field Schema
 
-When Aha! custom fields change:
+The server automatically fetches custom field definitions from the Aha! API:
 
-1. Export custom fields from Aha! Settings → Account → Custom fields → Export
-2. Save the CSV as `config/custom_field_report.csv` (replace existing file)
-3. Run `npm run build` to regenerate the schema
-4. Commit the updated CSV
+- **Build time**: `scripts/generate_custom_field_schema.cjs` fetches all field definitions and options, writes to `build/aha_custom_field_schema.json` with 30-day cache expiry
+- **Runtime**: The `list_custom_fields` tool checks cache freshness and auto-refreshes if stale or missing
+- **No manual updates needed**: Schema stays fresh automatically
 
-The schema JSON is generated during build and should not be committed.
+The cached schema includes field IDs, keys, names, normalized types, and pre-fetched options for select fields.
 
 ## Troubleshooting
 

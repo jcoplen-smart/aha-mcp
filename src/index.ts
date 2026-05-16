@@ -3,9 +3,6 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
 import { GraphQLClient } from "graphql-request";
-import { readFileSync } from "fs";
-import { resolve } from "path";
-import { fileURLToPath } from "url";
 import { Handlers } from "./handlers.js";
 
 const AHA_API_TOKEN = process.env.AHA_API_TOKEN;
@@ -19,25 +16,6 @@ if (!AHA_DOMAIN) {
   throw new Error("AHA_DOMAIN environment variable is required");
 }
 
-// Load custom field schema — used to enrich tool descriptions at startup
-function loadCustomFieldSchema(): Record<string, Array<{ name: string; api_key: string; field_type: string }>> {
-  const schemaPath = process.env.AHA_CUSTOM_FIELD_SCHEMA_PATH
-    ?? resolve(fileURLToPath(import.meta.url), "../aha_custom_field_schema.json");
-  try {
-    const raw = readFileSync(schemaPath, "utf-8");
-    const parsed = JSON.parse(raw);
-    return parsed.custom_fields_by_record_type ?? {};
-  } catch {
-    console.error(`[aha-mcp] Warning: could not load custom field schema from ${schemaPath}`);
-    return {};
-  }
-}
-
-const customFieldSchema = loadCustomFieldSchema();
-const rawCompetitorFields = customFieldSchema["Competitor"];
-const competitorFields: Array<{ name: string; api_key: string; field_type: string }> =
-  Array.isArray(rawCompetitorFields) ? rawCompetitorFields : [];
-
 const verifiedAhaApiToken = AHA_API_TOKEN;
 const verifiedAhaDomain = AHA_DOMAIN;
 
@@ -49,18 +27,6 @@ const client = new GraphQLClient(
     },
   }
 );
-
-// Build a short field-key hint for use in tool descriptions
-function buildCompetitorFieldHint(): string {
-  if (competitorFields.length === 0) {
-    return "description (Note — HTML), hq (Text), customer_feedback_forum (URL), announcementsblog (URL — no underscore), competitor_type (Predefined choice list)";
-  }
-  return competitorFields
-    .map((f) => `${f.name} key="${f.api_key}" (${f.field_type})`)
-    .join(", ");
-}
-
-const competitorFieldHint = buildCompetitorFieldHint();
 
 class AhaMcp {
   private server: McpServer;
@@ -567,7 +533,7 @@ class AhaMcp {
       "get_competitor",
       {
         description:
-          `Get a specific Aha! competitor record by reference number (e.g. LUM-C-1). Requires the workspace product key. Returns standard fields (name, subtitle) and the full custom_fields array showing each field's key, name, value, and type. Use this before update_competitor to inspect current values. Known custom field keys for this workspace: ${competitorFieldHint}.`,
+          "Get a specific Aha! competitor record by reference number (e.g. LUM-C-1). Requires the workspace product key. Returns standard fields (name, subtitle) and the full custom_fields array showing each field's key, name, value, and type. Use this before update_competitor to inspect current values. To discover available custom field keys and types, call list_custom_fields with record_type=\"Competitor\".",
         inputSchema: {
           product_id: z.string().describe("Workspace key (e.g. LUM)"),
           competitor_id: z.string().describe("Reference number of the competitor (e.g. LUM-C-1), as returned by list_competitors"),
@@ -581,7 +547,7 @@ class AhaMcp {
       "update_competitor",
       {
         description:
-          `Update an existing Aha! competitor by reference number (e.g. LUM-C-1). Accepts standard fields (name, subtitle) and an optional custom_fields object (flat key/value pairs). Known custom field keys: ${competitorFieldHint}. description is a Note field — pass HTML. Call get_competitor first to read current values. At least one field must be provided.`,
+          "Update an existing Aha! competitor by reference number (e.g. LUM-C-1). Accepts standard fields (name, subtitle) and an optional custom_fields object (flat key/value pairs). Call list_custom_fields with record_type=\"Competitor\" to discover available custom field keys, types, and valid options. Note fields require HTML. Call get_competitor first to read current values. At least one field must be provided.",
         inputSchema: {
           product_id: z.string().describe("Workspace key (e.g. LUM)"),
           competitor_id: z.string().describe("Reference number of the competitor to update (e.g. LUM-C-1)"),
@@ -604,7 +570,7 @@ class AhaMcp {
       "create_competitor",
       {
         description:
-          `Create a new competitor in an Aha! workspace. Accepts standard fields (name, subtitle) and an optional custom_fields object. Known custom field keys: ${competitorFieldHint}. description is a Note field — pass HTML. Call get_competitor on an existing record to discover keys and current values before creating. Returns the newly created record including its reference_num.`,
+          "Create a new competitor in an Aha! workspace. Accepts standard fields (name, subtitle) and an optional custom_fields object. Call list_custom_fields with record_type=\"Competitor\" to discover available custom field keys, types, and valid options. Note fields require HTML. You can also call get_competitor on an existing record to see example values. Returns the newly created record including its reference_num.",
         inputSchema: {
           product_id: z.string().describe("Workspace key (e.g. LUM)"),
           name: z.string().describe("Competitor name (e.g. Pear Deck)"),
