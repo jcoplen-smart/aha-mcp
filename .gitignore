@@ -11,4 +11,4 @@ config/aha_custom_field_schema.json
 .claude/review-history.json
 .claude/review-loop-status.md
 .claude/scheduled_tasks.lock
-.claude/scheudled_tasks.json
+.claude/scheduled_tasks.json
