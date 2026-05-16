@@ -66,10 +66,11 @@ async function generateSchema() {
   const ahaApiToken = process.env.AHA_API_TOKEN;
 
   if (!ahaDomain || !ahaApiToken) {
-    console.error('[ERROR] Missing required environment variables:');
-    console.error('  AHA_DOMAIN=' + (ahaDomain || '(not set)'));
-    console.error('  AHA_API_TOKEN=' + (ahaApiToken ? '(set)' : '(not set)'));
-    process.exit(1);
+    console.log('[INFO] Skipping custom field schema generation - environment variables not set');
+    console.log('  AHA_DOMAIN=' + (ahaDomain || '(not set)'));
+    console.log('  AHA_API_TOKEN=' + (ahaApiToken ? '(set)' : '(not set)'));
+    console.log('  The server will use an existing cached schema if available.');
+    return;
   }
 
   console.log('Fetching custom field definitions from Aha! API...');
