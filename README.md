@@ -263,6 +263,7 @@ Searches for Aha! documents.
 
 ### Building from Source
 
+**For development:**
 ```bash
 npm run build
 ```
@@ -270,7 +271,13 @@ npm run build
 This will:
 1. Compile TypeScript sources to `build/`
 2. Fetch custom field definitions from Aha! API and cache to `build/aha_custom_field_schema.json` (30-day TTL)
-3. Create `aha-mcp.zip` deployment package
+
+**For release/deployment:**
+```bash
+npm run release
+```
+
+This runs `build` and additionally creates `aha-mcp.zip` deployment package
 
 ### Custom Field Schema
 
