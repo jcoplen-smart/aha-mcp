@@ -225,7 +225,7 @@ Use `CronCreate` to schedule next check in 5 minutes:
 CronCreate({
   cron: "<current_minute+5> * * * *",  // 5 minutes from now
   recurring: false,  // One-shot - will reschedule itself if needed
-  durable: false,  // Session-only - stops if user closes Claude
+  durable: true,  // Persist to disk - survives restarts and visible across sessions
   prompt: "/auto-review-loop <pr-number>"
 })
 ```
@@ -285,13 +285,13 @@ The loop stops and cleans up when:
 1. ✅ **All threads resolved** - Success!
 2. ⚠️ **Loop detected** - Same issue flagged twice
 3. ⚠️ **Max cycles reached** - 5 cycles completed
-4. ❌ **User closes Claude Code** - Cron job is session-only
-5. 🛑 **User manually deletes cron job** - Using CronDelete
+4. 🛑 **User manually deletes cron job** - Using CronDelete or editing `.claude/scheduled_tasks.json`
 
 ## Notes
 
 - **Non-blocking**: You can interact with Claude between checks
-- **Session-only**: Loop stops if you close Claude Code (by design)
+- **Durable**: Loop persists across sessions and restarts (stored in `.claude/scheduled_tasks.json`)
+- **Cross-session**: Visible to all Claude sessions (terminal, conversation pane, IDE)
 - **Status file**: Check `.claude/review-loop-status.md` anytime for current state
 - **Manual override**: You can always run `/respond-to-review` manually to take over
 - **Permission prompts**: If your settings require approval, the loop will pause until you approve
@@ -299,7 +299,7 @@ The loop stops and cleans up when:
 
 ## Limitations
 
-- Cannot detect you returning - status updates appear in conversation history
-- Requires Claude Code session to stay open
+- Status updates appear in whichever Claude session is active when the cron job fires
 - Codex must complete reviews within 5-minute windows for smooth operation
 - Loop detection is heuristic - may miss sophisticated repeated issues
+- Requires at least one Claude session to be running for cron jobs to fire
