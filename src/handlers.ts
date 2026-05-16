@@ -2061,13 +2061,11 @@ export class Handlers {
   }
 
   private async fetchAndCacheCustomFields(): Promise<CustomFieldSchema> {
-    // Fetch all custom field definitions
-    const data = await this.restRequest<CustomFieldDefinitionsResponse>(
+    // Fetch all custom field definitions (paginated)
+    const definitions = await this.fetchAllPages<any>(
       `/api/v1/custom_field_definitions`,
-      "GET"
+      "custom_field_definitions"
     );
-
-    const definitions = data.custom_field_definitions;
 
     // Identify which definitions need options fetched
     const selectTypes = [
