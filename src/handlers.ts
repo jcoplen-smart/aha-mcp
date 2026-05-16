@@ -2083,18 +2083,28 @@ export class Handlers {
       selectTypes.includes(def.type)
     );
 
-    // Fetch options in parallel for all select-type fields
-    const optionsPromises = defsNeedingOptions.map((def) =>
-      this.restRequest<CustomFieldOptionsResponse>(
-        `/api/v1/custom_field_definitions/${def.id}/custom_field_options`,
-        "GET"
-      ).catch((error) => {
-        console.error(`Failed to fetch options for field ${def.key}:`, error);
-        return null;
-      })
-    );
+    // Fetch options serially to avoid rate limiting
+    const optionsResults: (CustomFieldOptionsResponse | null)[] = [];
 
-    const optionsResults = await Promise.all(optionsPromises);
+    for (let i = 0; i < defsNeedingOptions.length; i++) {
+      const def = defsNeedingOptions[i];
+
+      try {
+        const result = await this.restRequest<CustomFieldOptionsResponse>(
+          `/api/v1/custom_field_definitions/${def.id}/custom_field_options`,
+          "GET"
+        );
+        optionsResults.push(result);
+      } catch (error) {
+        console.error(`Failed to fetch options for field ${def.key}:`, error);
+        optionsResults.push(null);
+      }
+
+      // Add delay between requests to avoid rate limiting (except after last request)
+      if (i < defsNeedingOptions.length - 1) {
+        await new Promise(resolve => setTimeout(resolve, 1500)); // 1.5 second delay
+      }
+    }
 
     // Build options map
     const optionsMap = new Map<string, string[]>();

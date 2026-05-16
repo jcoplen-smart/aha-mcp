@@ -101,21 +101,31 @@ async function generateSchema() {
       selectTypes.includes(def.type)
     );
 
-    console.log(`  Fetching options for ${defsNeedingOptions.length} select fields...`);
+    console.log(`  Fetching options for ${defsNeedingOptions.length} select fields (this may take ~${Math.ceil(defsNeedingOptions.length * 1.5)} seconds)...`);
 
-    // Fetch options in parallel for all select-type fields
-    const optionsPromises = defsNeedingOptions.map((def) =>
-      restRequest(
-        ahaDomain,
-        ahaApiToken,
-        `/api/v1/custom_field_definitions/${def.id}/custom_field_options`
-      ).catch((error) => {
+    // Fetch options serially to avoid rate limiting
+    const optionsResults = [];
+
+    for (let i = 0; i < defsNeedingOptions.length; i++) {
+      const def = defsNeedingOptions[i];
+
+      try {
+        const result = await restRequest(
+          ahaDomain,
+          ahaApiToken,
+          `/api/v1/custom_field_definitions/${def.id}/custom_field_options`
+        );
+        optionsResults.push(result);
+      } catch (error) {
         console.error(`  [WARNING] Failed to fetch options for field ${def.key}:`, error.message);
-        return null;
-      })
-    );
+        optionsResults.push(null);
+      }
 
-    const optionsResults = await Promise.all(optionsPromises);
+      // Add delay between requests to avoid rate limiting (except after last request)
+      if (i < defsNeedingOptions.length - 1) {
+        await new Promise(resolve => setTimeout(resolve, 1500)); // 1.5 second delay
+      }
+    }
 
     // Build options map
     const optionsMap = new Map();
