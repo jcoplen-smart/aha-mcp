@@ -16,6 +16,8 @@ async function createPackage() {
   }
 
   // Dynamic import for ESM-only archiver package
+  // Note: ZipArchive class is the official API per archiver@8 README (Quick Start section)
+  // TypeScript definitions are incomplete but the class export is documented and supported
   const { ZipArchive } = await import('archiver');
 
   // Create zip archive
