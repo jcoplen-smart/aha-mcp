@@ -57,7 +57,36 @@ Create or load tracking files:
 
 Initialize with cycle 0 if starting fresh.
 
-### Step 2: Check for Unresolved Feedback
+### Step 2: Check for Codex Approval
+
+Codex signals approval by reacting with 👍 to the `@codex review` comment.
+
+**Find the most recent `@codex review` comment:**
+```bash
+gh api repos/jcoplen-smart/aha-mcp/issues/<PR_NUMBER>/comments | \
+  python -c "import sys, json; comments = json.load(sys.stdin); \
+  review_requests = [c for c in comments if c['body'] == '@codex review' and c['user']['login'] == 'jcoplen-smart']; \
+  print(review_requests[-1]['id'] if review_requests else '')"
+```
+
+**Check for 👍 reaction from Codex:**
+```bash
+gh api repos/jcoplen-smart/aha-mcp/issues/comments/<COMMENT_ID>/reactions | \
+  python -c "import sys, json; reactions = json.load(sys.stdin); \
+  codex_thumbsup = [r for r in reactions if r['user']['login'] == 'chatgpt-codex-connector[bot]' and r['content'] == '+1']; \
+  print('approved' if codex_thumbsup else 'pending')"
+```
+
+**If approved (👍 found):**
+- Update status file: "✅ PR #<number> is clean and ready to merge! Codex approved."
+- Delete the cron job (using CronDelete with the stored job ID)
+- Output success message to user
+- Exit
+
+**If not approved yet:**
+- Continue to Step 3
+
+### Step 3: Check for Unresolved Feedback
 
 ```bash
 gh api graphql -f query='query {
@@ -83,16 +112,15 @@ gh api graphql -f query='query {
 
 Filter for `isResolved: false` threads.
 
-**If no unresolved threads:**
-- Update status file: "✅ PR #<number> is clean and ready to merge!"
-- Delete the cron job (using CronDelete with the stored job ID)
-- Output success message to user
+**If no unresolved threads and no approval yet:**
+- Still waiting for Codex to review and approve
+- Continue to Step 7 (schedule next check)
 - Exit
 
 **If unresolved threads found:**
-- Continue to Step 3
+- Continue to Step 4
 
-### Step 3: Detect Loops
+### Step 4: Detect Loops
 
 For each unresolved thread:
 1. Extract file path and issue excerpt (first 100 chars of body)
@@ -124,9 +152,9 @@ Increment cycle counter.
 - Exit
 
 **If cycle <= 5:**
-- Continue to Step 5
+- Continue to Step 6
 
-### Step 5: Implement Fixes
+### Step 6: Implement Fixes
 
 Execute the `/respond-to-review` workflow:
 1. Fetch all review comments
@@ -144,7 +172,7 @@ Record each fix in review history with:
 - Commit hash
 - Timestamp
 
-### Step 6: Update Status File
+### Step 7: Update Status File
 
 Write current status to `.claude/review-loop-status.md`:
 
@@ -179,7 +207,7 @@ Codex review of latest changes
 </details>
 ```
 
-### Step 7: Schedule Next Check
+### Step 8: Schedule Next Check
 
 Use `CronCreate` to schedule next check in 5 minutes:
 
@@ -194,7 +222,7 @@ CronCreate({
 
 Store the returned job ID in the review history JSON for cleanup.
 
-### Step 8: Output Status
+### Step 9: Output Status
 
 Output to conversation:
 
