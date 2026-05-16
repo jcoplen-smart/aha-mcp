@@ -2062,13 +2062,14 @@ export class Handlers {
 
   private async fetchAndCacheCustomFields(): Promise<CustomFieldSchema> {
     // NOTE: The Aha! API endpoint for custom_field_definitions ignores pagination
-    // parameters and returns the complete dataset in a single response. However,
-    // we use fetchAllPages for consistency with other endpoints and future-proofing
-    // in case Aha changes this behavior.
-    const definitions = await this.fetchAllPages<any>(
+    // parameters and always returns the complete dataset in a single response.
+    // This behavior was verified during implementation - do not use fetchAllPages
+    // here as it would loop indefinitely on a non-paginated endpoint.
+    const data = await this.restRequest<CustomFieldDefinitionsResponse>(
       `/api/v1/custom_field_definitions`,
-      "custom_field_definitions"
+      "GET"
     );
+    const definitions = data.custom_field_definitions || [];
 
     // Identify which definitions need options fetched
     const selectTypes = [
