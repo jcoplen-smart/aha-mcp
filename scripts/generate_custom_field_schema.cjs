@@ -194,9 +194,10 @@ async function generateSchema() {
     console.log(`  Cache expires: ${expires.toISOString().split('T')[0]}`);
     console.log(`  Output: ${outputPath}`);
   } catch (error) {
-    console.error('[ERROR] Failed to generate custom field schema:');
-    console.error(error.message);
-    process.exit(1);
+    console.warn('[WARNING] Failed to generate custom field schema:');
+    console.warn(error.message);
+    console.warn('  Build will continue - the server will use existing cached schema if available.');
+    // Do not exit(1) - build should succeed even if schema refresh fails
   }
 }
 
