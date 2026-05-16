@@ -1,7 +1,7 @@
 build
 node_modules/
 .env
-.claude/settings.local.json
+.claude/
 .mcp.json
 aha-mcp.zip
 config/aha_custom_field_schema.json
