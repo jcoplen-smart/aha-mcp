@@ -12,16 +12,18 @@ Run this skill when Codex or another reviewer has posted feedback on your PR and
 
 ## What This Skill Does
 
-Executes the full 8-step code review response workflow from CLAUDE.md:
+Executes the full code review response workflow:
 
 1. **Find the PR** for the current branch automatically
-2. **Fetch all review comments** (top-level summary + inline line-level comments with thread IDs)
-3. **Read and understand all feedback** - group related comments, identify unclear/contradictory items
-4. **Run self-review checklist** against feedback to confirm each issue is real
-5. **Implement fixes** and verify `npm run build` passes
-6. **Commit and push** with conventional commit message
-7. **Resolve addressed review threads** via GraphQL (using thread IDs from step 2)
-8. **Trigger fresh Codex review** by posting `@codex review` comment
+2. **Check for Codex approval** - exit early if PR is already approved
+3. **Fetch all review comments** (top-level summary + inline line-level comments with thread IDs)
+4. **Read and understand all feedback** - group related comments, detect contradictions with prior fixes
+5. **Run self-review checklist** against feedback to confirm each issue is real
+6. **Implement fixes** and verify `npm run build` passes
+7. **Commit and push** with conventional commit message
+8. **Reply directly to inline comments** with fix details
+9. **Resolve addressed review threads** via GraphQL
+10. **Trigger fresh Codex review** by posting `@codex review` comment
 
 ## Instructions for Claude
 
@@ -42,6 +44,43 @@ gh pr list --head "$BRANCH"
 ```
 
 Extract the PR number for subsequent steps.
+
+### Step 1.5: Check for Codex Approval
+
+Before doing any work, check if Codex has already approved the PR. Codex signals approval in two ways:
+
+1. Posts a top-level comment containing "Codex Review: Didn't find any major issues"
+2. Reacts with 👍 to the **first PR comment** (not the @codex review comment)
+
+**Check for clean review comment:**
+```bash
+gh api repos/jcoplen-smart/aha-mcp/issues/<PR_NUMBER>/comments | python -c "
+import sys, json
+comments = json.load(sys.stdin)
+codex_comments = [c for c in comments if c['user']['login'] == 'chatgpt-codex-connector[bot]']
+clean_reviews = [c for c in codex_comments if 'Codex Review:' in c['body'] and \"Didn't find any major issues\" in c['body']]
+print('approved' if clean_reviews else 'pending')
+"
+```
+
+**Check for 👍 on first PR comment:**
+```bash
+FIRST_COMMENT=$(gh api repos/jcoplen-smart/aha-mcp/issues/<PR_NUMBER>/comments | \
+  python -c "import sys, json; comments = json.load(sys.stdin); print(comments[0]['id'] if comments else '')")
+
+gh api repos/jcoplen-smart/aha-mcp/issues/comments/$FIRST_COMMENT/reactions | python -c "
+import sys, json
+reactions = json.load(sys.stdin)
+codex_thumbsup = [r for r in reactions if r['user']['login'] == 'chatgpt-codex-connector[bot]' and r['content'] == '+1']
+print('approved' if codex_thumbsup else 'pending')
+"
+```
+
+**If approved (either signal found):**
+- Output: "✅ PR #<number> is already approved by Codex - no action needed."
+- Exit the skill
+
+**If not approved:** Continue to Step 2.
 
 ### Step 2: Fetch All Review Comments
 
@@ -84,12 +123,43 @@ query {
 
 This returns thread IDs in the correct `PRRT_...` format needed for resolution.
 
-### Step 3: Understand Feedback
+### Step 3: Understand Feedback and Detect Contradictions
 
 - Read all comments completely
 - Group related feedback items together
 - Identify any unclear or contradictory feedback
-- **If anything is ambiguous, STOP and ask the user for clarification before proceeding**
+
+**Check for contradictory feedback against prior fixes on this branch:**
+
+For each piece of feedback, check the git log for previous commits that touched the same file:
+
+```bash
+# For each file mentioned in feedback
+git log origin/main..HEAD --oneline -- <file>
+```
+
+If a previous commit on this branch addressed the same file, examine its message and changes:
+
+```bash
+git show <commit-hash>
+```
+
+**Look for contradictions** - cases where new feedback asks for the opposite of what was already fixed. Examples:
+- Earlier: "Decouple X from Y" → Fixed by separating them
+- Now: "Couple X into Y" → Asks to put them back together
+
+**If contradictory feedback detected:**
+- **STOP** and present the contradiction to the user
+- Show: previous commit message + current feedback + the conflict
+- Ask: "Should I (1) implement as requested, (2) propose a compromise, (3) push back as false positive, or (4) ask Codex for clarification?"
+- Do NOT silently flip-flop on previous decisions
+
+**STOP and ask the user when:**
+- Feedback contradicts a prior fix on this branch
+- Feedback is ambiguous or unclear
+- Feedback requires architectural decisions (not just code changes)
+- Feedback contradicts CLAUDE.md conventions
+- Multiple valid interpretations exist
 
 ### Step 4: Run Self-Review Checklist
 
