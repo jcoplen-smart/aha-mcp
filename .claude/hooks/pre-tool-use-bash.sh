@@ -18,7 +18,7 @@ if [[ "$COMMAND" == git\ commit* ]]; then
     BRANCH=$(git branch --show-current)
     if [ "$BRANCH" = "main" ]; then
         echo '{
-            "stopReason": "Cannot commit directly to main branch. Create a feature branch first with:\n  git checkout -b claude/<description>-'$(date +%s)'",
+            "stopReason": "Cannot commit directly to main branch. Create a feature branch first with:\n  /create-branch [description]\n\nOr manually:\n  git checkout -b claude/<description>-'$(date +%s)'",
             "continue": false
         }'
         exit 1

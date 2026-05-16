@@ -10,12 +10,16 @@ Enforces git workflow safety rules:
 
 1. **Branch Protection** - Blocks commits directly to `main` branch
    - Forces use of feature branches with naming pattern: `claude/<description>-<timestamp>`
+   - Suggests using `/create-branch` skill for proper branch creation
    
 2. **Build Validation** - Runs `npm run build` before allowing commits
    - Ensures TypeScript compiles cleanly before changes are committed
+   - Complements `/self-review` skill which validates conventions
    
 3. **Remote Verification** - Checks git remote before pushes
    - Ensures remote points to `jcoplen-smart/aha-mcp` (not upstream fork)
+
+These hooks work together with skills (`.claude/skills/`) to enforce project workflows.
 
 ## How Hooks Work
 
