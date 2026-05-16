@@ -15,7 +15,8 @@
     "start": "node build/index.js",
     "mcp-start": "npm run build && npm run start",
     "prepublishOnly": "npm run build",
-    "package": "npm run build && node scripts/package-deployment.cjs"
+    "package": "node scripts/package-deployment.cjs",
+    "release": "npm run build && npm run package"
   },
   "keywords": [
     "aha",
