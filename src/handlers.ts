@@ -2005,8 +2005,19 @@ export class Handlers {
       if (cached && this.isCacheValid(cached)) {
         schema = cached;
       } else {
-        // Cache stale or missing - fetch fresh from API
-        schema = await this.fetchAndCacheCustomFields();
+        // Cache stale or missing - try to fetch fresh from API
+        try {
+          schema = await this.fetchAndCacheCustomFields();
+        } catch (refreshError) {
+          // Refresh failed - fall back to stale cache if available
+          if (cached) {
+            console.warn('Failed to refresh custom field schema, using stale cache:', refreshError);
+            schema = cached;
+          } else {
+            // No stale cache available - propagate the error
+            throw refreshError;
+          }
+        }
       }
 
       // Extract and filter the data
