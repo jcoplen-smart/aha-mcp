@@ -76,7 +76,10 @@ async function generateSchema() {
   console.log('Fetching custom field definitions from Aha! API...');
 
   try {
-    // Fetch all custom field definitions
+    // NOTE: The Aha! API endpoint for custom_field_definitions ignores pagination
+    // parameters and always returns the complete dataset in a single response.
+    // This behavior was verified during implementation - do not add pagination
+    // loops here unless Aha changes this API behavior in the future.
     const data = await restRequest(
       ahaDomain,
       ahaApiToken,

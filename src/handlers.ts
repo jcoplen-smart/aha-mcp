@@ -2061,7 +2061,10 @@ export class Handlers {
   }
 
   private async fetchAndCacheCustomFields(): Promise<CustomFieldSchema> {
-    // Fetch all custom field definitions (paginated)
+    // NOTE: The Aha! API endpoint for custom_field_definitions ignores pagination
+    // parameters and returns the complete dataset in a single response. However,
+    // we use fetchAllPages for consistency with other endpoints and future-proofing
+    // in case Aha changes this behavior.
     const definitions = await this.fetchAllPages<any>(
       `/api/v1/custom_field_definitions`,
       "custom_field_definitions"
@@ -2143,14 +2146,16 @@ export class Handlers {
       custom_fields_by_record_type: grouped,
     };
 
-    // Write to cache file
+    // Cache in memory first, regardless of file write success
+    this.customFieldCache = schema;
+
+    // Write to cache file (best effort - failures won't break the tool)
     try {
       const fs = await import("fs/promises");
       await fs.writeFile(this.CACHE_PATH, JSON.stringify(schema, null, 2), "utf-8");
-      this.customFieldCache = schema;
     } catch (error) {
       console.error("Failed to write custom field cache:", error);
-      // Continue anyway - cache write failure shouldn't break the tool
+      // Continue anyway - in-memory cache is already set
     }
 
     return schema;
