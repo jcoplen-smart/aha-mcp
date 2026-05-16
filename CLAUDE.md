@@ -30,17 +30,22 @@ If it points anywhere else, stop and ask before proceeding.
   git checkout -b claude/<short-description>-$(date +%s)
   ```
 
+**If work was accidentally started on `main`:**
+- If there are uncommitted changes: simply create the branch with `git checkout -b claude/<description>-$(date +%s)` — the changes will move to the new branch automatically
+- Never commit directly to `main` — user has protections in place to prevent this
+
 ### New Work: Implementation Workflow
 
 When starting any new work:
 
-1. Pull latest main and create a `claude/` branch (see above)
-2. Implement changes
-3. Run `npm run build` — fix any errors before proceeding
-4. Run the self-review checklist (see API Conventions below)
-5. Commit with a descriptive conventional commit message (`feat: ...`, `fix: ...`, etc.)
-6. Push to `origin` (`jcoplen-smart/aha-mcp`)
-7. **Stop here.** Do not create a PR unless explicitly asked to.
+1. **Check current branch first:** `git branch --show-current`
+2. If on `main`, create a `claude/` branch before touching any files (see above)
+3. Implement changes
+4. Run `npm run build` — fix any errors before proceeding
+5. Run the self-review checklist (see API Conventions below)
+6. Commit with a descriptive conventional commit message (`feat: ...`, `fix: ...`, etc.)
+7. Push to `origin` (`jcoplen-smart/aha-mcp`)
+8. **Stop here.** Do not create a PR unless explicitly asked to.
 
 Multiple rounds of work may be committed and pushed to the same branch before a PR is
 opened. Wait for the user to say it's time.
