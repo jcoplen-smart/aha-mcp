@@ -2102,7 +2102,7 @@ export class Handlers {
 
       // Add delay between requests to avoid rate limiting (except after last request)
       if (i < defsNeedingOptions.length - 1) {
-        await new Promise(resolve => setTimeout(resolve, 1500)); // 1.5 second delay
+        await new Promise(resolve => setTimeout(resolve, 500)); // 500ms delay
       }
     }
 

@@ -101,7 +101,7 @@ async function generateSchema() {
       selectTypes.includes(def.type)
     );
 
-    console.log(`  Fetching options for ${defsNeedingOptions.length} select fields (this may take ~${Math.ceil(defsNeedingOptions.length * 1.5)} seconds)...`);
+    console.log(`  Fetching options for ${defsNeedingOptions.length} select fields (this may take ~${Math.ceil(defsNeedingOptions.length * 0.5)} seconds)...`);
 
     // Fetch options serially to avoid rate limiting
     const optionsResults = [];
@@ -123,7 +123,7 @@ async function generateSchema() {
 
       // Add delay between requests to avoid rate limiting (except after last request)
       if (i < defsNeedingOptions.length - 1) {
-        await new Promise(resolve => setTimeout(resolve, 1500)); // 1.5 second delay
+        await new Promise(resolve => setTimeout(resolve, 500)); // 500ms delay
       }
     }
 
