@@ -9,3 +9,5 @@ config/aha_custom_field_schema.json
 .claude/settings.json
 .claude/settings.local.json
 .claude/review-history.json
+.claude/review-loop-status.md
+.claude/scheduled_tasks.lock
