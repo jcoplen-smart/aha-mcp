@@ -59,11 +59,13 @@ Initialize with cycle 0 if starting fresh.
 
 ### Step 2: Check for Codex Approval
 
-Codex signals approval by posting a top-level comment starting with "Codex Review: Didn't find any major issues."
+Codex signals approval in two ways:
+1. Posts a top-level comment: "Codex Review: Didn't find any major issues. [phrase]"
+2. Reacts with 👍 to the **first PR comment** (not the @codex review comment)
 
-While reviewing, Codex posts 👀 (eyes) reactions to indicate it's working.
+While reviewing, Codex posts 👀 (eyes) reactions on both the first comment and latest @codex review comment.
 
-**Check for clean review approval:**
+**Check for clean review comment:**
 ```bash
 gh api repos/jcoplen-smart/aha-mcp/issues/<PR_NUMBER>/comments | \
   python -c "import sys, json; comments = json.load(sys.stdin); \
@@ -72,8 +74,21 @@ gh api repos/jcoplen-smart/aha-mcp/issues/<PR_NUMBER>/comments | \
   print('approved' if clean_reviews else 'pending')"
 ```
 
-**If approved (clean review found):**
-- Update status file: "✅ PR #<number> is clean and ready to merge! Codex approved with no major issues."
+**Check for 👍 on first PR comment:**
+```bash
+# Get the first PR comment ID
+FIRST_COMMENT=$(gh api repos/jcoplen-smart/aha-mcp/issues/<PR_NUMBER>/comments | \
+  python -c "import sys, json; comments = json.load(sys.stdin); print(comments[0]['id'] if comments else '')")
+
+# Check for thumbs up from Codex
+gh api repos/jcoplen-smart/aha-mcp/issues/comments/$FIRST_COMMENT/reactions | \
+  python -c "import sys, json; reactions = json.load(sys.stdin); \
+  codex_thumbsup = [r for r in reactions if r['user']['login'] == 'chatgpt-codex-connector[bot]' and r['content'] == '+1']; \
+  print('approved' if codex_thumbsup else 'pending')"
+```
+
+**If approved (either signal found):**
+- Update status file: "✅ PR #<number> is clean and ready to merge! Codex approved."
 - Delete the cron job (using CronDelete with the stored job ID)
 - Output success message to user
 - Exit
