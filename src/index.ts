@@ -650,6 +650,24 @@ class AhaMcp {
           params: { arguments: args },
         })
     );
+
+    this.server.registerTool(
+      "list_custom_fields",
+      {
+        description:
+          "List all custom field definitions in the Aha! account, grouped by record type (Feature, Epic, Competitor, Initiative, Release, etc.). Returns each field's API key, display name, normalized type (text, note, url, select, select_multiple, date, number, etc.), and — for select fields — the list of valid option values. Use this BEFORE calling update_feature, update_epic, create_competitor, or update_competitor when you need to discover available custom fields, confirm a field's type, or validate a choice value. Field keys returned here are what goes into the custom_fields parameter on write operations. Optional record_type filter (e.g., \"Feature\") narrows the response to one record type (case-insensitive match against custom_fieldable_type). Custom field definitions are account-scoped, not workspace-scoped — no product_id parameter needed.",
+        inputSchema: {
+          record_type: z
+            .string()
+            .optional()
+            .describe(
+              'Optional filter to return only fields for a specific record type (e.g., "Feature", "Epic", "Competitor"). Case-insensitive. If omitted, returns all custom fields grouped by record type.'
+            ),
+        },
+      },
+      (args) =>
+        this.handlers.handleListCustomFields({ params: { arguments: args } })
+    );
   }
 
   async run() {
