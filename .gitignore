@@ -8,3 +8,4 @@ config/aha_custom_field_schema.json
 # Claude Code - only ignore settings files, not hooks
 .claude/settings.json
 .claude/settings.local.json
+.claude/review-history.json
