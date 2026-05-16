@@ -12,11 +12,10 @@
   ],
   "scripts": {
     "build": "tsc && node scripts/generate_custom_field_schema.cjs",
-    "postbuild": "node scripts/package-deployment.cjs",
     "start": "node build/index.js",
     "mcp-start": "npm run build && npm run start",
     "prepublishOnly": "npm run build",
-    "package": "npm run build"
+    "package": "npm run build && node scripts/package-deployment.cjs"
   },
   "keywords": [
     "aha",
