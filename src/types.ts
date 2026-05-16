@@ -185,3 +185,46 @@ export interface Competitor {
   color?: number;
   custom_fields?: CompetitorCustomField[];
 }
+
+export interface CustomFieldDefinition {
+  id: string;
+  key: string;
+  name: string;
+  type: string;
+  options: string[] | null;
+}
+
+export interface CustomFieldDefinitionsResponse {
+  custom_field_definitions: Array<{
+    id: string;
+    key: string;
+    name: string;
+    type: string;
+    custom_fieldable_type: string;
+    internal_name: string | null;
+  }>;
+}
+
+export interface CustomFieldOptionsResponse {
+  custom_field_options: Array<{
+    id: string;
+    value: string;
+    color: number;
+    hidden: boolean;
+  }>;
+}
+
+export interface CustomFieldSchema {
+  _meta: {
+    cached_at: string;
+    expires_at: string;
+    ttl_days: number;
+  };
+  custom_fields_by_record_type: {
+    [recordType: string]: CustomFieldDefinition[];
+  };
+}
+
+export interface ListCustomFieldsResult {
+  [recordType: string]: CustomFieldDefinition[];
+}

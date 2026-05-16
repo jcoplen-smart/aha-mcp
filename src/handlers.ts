@@ -1,5 +1,7 @@
 import { ErrorCode, McpError } from "@modelcontextprotocol/sdk/types.js";
 import { GraphQLClient } from "graphql-request";
+import * as path from "path";
+import { fileURLToPath } from "url";
 import {
   FEATURE_REF_REGEX,
   REQUIREMENT_REF_REGEX,
@@ -16,6 +18,11 @@ import {
   AhaEpicInReleaseSummary,
   AhaCompetitorSummary,
   CompetitorCustomField,
+  CustomFieldDefinition,
+  CustomFieldDefinitionsResponse,
+  CustomFieldOptionsResponse,
+  CustomFieldSchema,
+  ListCustomFieldsResult,
 } from "./types.js";
 import {
   getPageQuery,
@@ -23,11 +30,19 @@ import {
 } from "./queries.js";
 
 export class Handlers {
+  private customFieldCache: CustomFieldSchema | null = null;
+  private readonly CACHE_PATH: string;
+
   constructor(
     private client: GraphQLClient,
     private ahaDomain: string,
     private ahaApiToken: string
-  ) {}
+  ) {
+    // In ES modules, __dirname is not available, so we compute it from import.meta.url
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+    this.CACHE_PATH = path.join(__dirname, "aha_custom_field_schema.json");
+  }
 
   private async restRequest<T>(
     path: string,
@@ -1975,6 +1990,231 @@ export class Handlers {
         `Failed to update initiative: ${errorMessage}`
       );
     }
+  }
+
+  async handleListCustomFields(request: any) {
+    const { record_type } = request.params.arguments as {
+      record_type?: string;
+    };
+
+    try {
+      // Check cache freshness
+      const cached = await this.loadCustomFieldCache();
+      let schema: CustomFieldSchema;
+
+      if (cached && this.isCacheValid(cached)) {
+        schema = cached;
+      } else {
+        // Cache stale or missing - try to fetch fresh from API
+        try {
+          schema = await this.fetchAndCacheCustomFields();
+        } catch (refreshError) {
+          // Refresh failed - fall back to stale cache if available
+          if (cached) {
+            console.warn('Failed to refresh custom field schema, using stale cache:', refreshError);
+            schema = cached;
+          } else {
+            // No stale cache available - propagate the error
+            throw refreshError;
+          }
+        }
+      }
+
+      // Extract and filter the data
+      let result = schema.custom_fields_by_record_type;
+
+      if (record_type) {
+        const normalizedFilter = record_type.toLowerCase();
+        result = Object.fromEntries(
+          Object.entries(result).filter(([type]) =>
+            type.toLowerCase() === normalizedFilter
+          )
+        );
+      }
+
+      return {
+        content: [
+          {
+            type: "text" as const,
+            text: JSON.stringify(result, null, 2),
+          },
+        ],
+      };
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      throw new McpError(
+        ErrorCode.InternalError,
+        `Failed to list custom fields: ${errorMessage}`
+      );
+    }
+  }
+
+  private async loadCustomFieldCache(): Promise<CustomFieldSchema | null> {
+    if (this.customFieldCache) {
+      return this.customFieldCache;
+    }
+
+    try {
+      const fs = await import("fs/promises");
+      const data = await fs.readFile(this.CACHE_PATH, "utf-8");
+      this.customFieldCache = JSON.parse(data) as CustomFieldSchema;
+      return this.customFieldCache;
+    } catch (error) {
+      // Cache file doesn't exist or is corrupted
+      return null;
+    }
+  }
+
+  private isCacheValid(schema: CustomFieldSchema): boolean {
+    const expiresAt = new Date(schema._meta.expires_at);
+    return expiresAt > new Date();
+  }
+
+  private async fetchAndCacheCustomFields(): Promise<CustomFieldSchema> {
+    // NOTE: The Aha! API endpoint for custom_field_definitions ignores pagination
+    // parameters and always returns the complete dataset in a single response.
+    // This behavior was verified during implementation - do not use fetchAllPages
+    // here as it would loop indefinitely on a non-paginated endpoint.
+    const data = await this.restRequest<CustomFieldDefinitionsResponse>(
+      `/api/v1/custom_field_definitions`,
+      "GET"
+    );
+    const definitions = data.custom_field_definitions || [];
+
+    // Identify which definitions need options fetched
+    const selectTypes = [
+      'CustomFieldDefinitions::SelectConstant',
+      'CustomFieldDefinitions::SelectEditable',
+      'CustomFieldDefinitions::SelectMultipleConstant',
+      'CustomFieldDefinitions::SelectMultipleEditable',
+    ];
+
+    const defsNeedingOptions = definitions.filter((def) =>
+      selectTypes.includes(def.type)
+    );
+
+    // Fetch options serially to avoid rate limiting
+    const optionsResults: (CustomFieldOptionsResponse | null)[] = [];
+
+    for (let i = 0; i < defsNeedingOptions.length; i++) {
+      const def = defsNeedingOptions[i];
+
+      try {
+        const result = await this.restRequest<CustomFieldOptionsResponse>(
+          `/api/v1/custom_field_definitions/${def.id}/custom_field_options`,
+          "GET"
+        );
+        optionsResults.push(result);
+      } catch (error) {
+        console.error(`Failed to fetch options for field ${def.key}:`, error);
+        optionsResults.push(null);
+      }
+
+      // Add delay between requests to avoid rate limiting (except after last request)
+      if (i < defsNeedingOptions.length - 1) {
+        await new Promise(resolve => setTimeout(resolve, 500)); // 500ms delay
+      }
+    }
+
+    // Build options map
+    const optionsMap = new Map<string, string[]>();
+    defsNeedingOptions.forEach((def, index) => {
+      const result = optionsResults[index];
+      if (result && result.custom_field_options) {
+        optionsMap.set(
+          def.id,
+          result.custom_field_options
+            .filter((opt) => !opt.hidden)
+            .map((opt) => opt.value)
+        );
+      }
+    });
+
+    // Group by record type and normalize
+    const grouped: { [recordType: string]: CustomFieldDefinition[] } = {};
+
+    for (const def of definitions) {
+      const recordType = def.custom_fieldable_type;
+
+      if (!grouped[recordType]) {
+        grouped[recordType] = [];
+      }
+
+      const isSelectType = selectTypes.includes(def.type);
+      const options = isSelectType
+        ? (optionsMap.get(def.id) || null)
+        : null;
+
+      grouped[recordType].push({
+        id: String(def.id),
+        key: def.key,
+        name: def.name,
+        type: this.normalizeCustomFieldType(def.type),
+        options,
+      });
+    }
+
+    // Build schema with metadata
+    const now = new Date();
+    const expires = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000); // 30 days
+
+    const schema: CustomFieldSchema = {
+      _meta: {
+        cached_at: now.toISOString(),
+        expires_at: expires.toISOString(),
+        ttl_days: 30,
+      },
+      custom_fields_by_record_type: grouped,
+    };
+
+    // Cache in memory first, regardless of file write success
+    this.customFieldCache = schema;
+
+    // Write to cache file (best effort - failures won't break the tool)
+    try {
+      const fs = await import("fs/promises");
+      await fs.writeFile(this.CACHE_PATH, JSON.stringify(schema, null, 2), "utf-8");
+    } catch (error) {
+      console.error("Failed to write custom field cache:", error);
+      // Continue anyway - in-memory cache is already set
+    }
+
+    return schema;
+  }
+
+  private normalizeCustomFieldType(apiType: string): string {
+    const knownMappings: Record<string, string> = {
+      'CustomFieldDefinitions::TextField': 'text',
+      'CustomFieldDefinitions::NoteField': 'note',
+      'CustomFieldDefinitions::NumberField': 'number',
+      'CustomFieldDefinitions::UrlField': 'url',
+      'CustomFieldDefinitions::DateField': 'date',
+      'CustomFieldDefinitions::SelectConstant': 'select',
+      'CustomFieldDefinitions::SelectEditable': 'select_editable',
+      'CustomFieldDefinitions::SelectMultipleConstant': 'select_multiple',
+      'CustomFieldDefinitions::SelectMultipleEditable': 'select_multiple_editable',
+      'CustomFieldDefinitions::ScorecardField': 'scorecard',
+      'CustomFieldDefinitions::Records::UsersField': 'users',
+      'CustomFieldDefinitions::Records::PersonasField': 'personas',
+    };
+
+    if (knownMappings[apiType]) {
+      return knownMappings[apiType];
+    }
+
+    // Fallback: strip prefixes and convert to snake_case
+    let normalized = apiType
+      .replace('CustomFieldDefinitions::', '')
+      .replace('Records::', '')
+      .replace(/Field$/, '');
+
+    normalized = normalized
+      .replace(/([A-Z])/g, '_$1')
+      .toLowerCase()
+      .replace(/^_/, '');
+
+    return normalized;
   }
 
 }

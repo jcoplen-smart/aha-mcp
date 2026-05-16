@@ -4,113 +4,37 @@ Project-specific notes for Claude Code working in the `jcoplen-smart/aha-mcp` re
 
 ---
 
-## ⚠️ Critical: Git and GitHub Rules
+## Automated Workflows
 
-**Never push to or create PRs against the upstream fork `aha-develop/aha-mcp`.
-All work stays on `jcoplen-smart/aha-mcp`.**
+**Skills** (invoke with `/skill-name`):
+- `/create-branch` - Create feature branch
+- `/start-work` - Full implementation workflow  
+- `/self-review` - Validate conventions
+- `/create-pr` - Create pull request
+- `/respond-to-review` - Respond to code review
 
-Before any `git push` or `gh pr create`, verify the remote:
-```bash
-git remote -v
-```
-The `origin` remote must point to `https://github.com/jcoplen-smart/aha-mcp`.
-If it points anywhere else, stop and ask before proceeding.
+**Hooks** (automatic enforcement):
+- Branch protection (blocks commits to `main`)
+- Build validation (runs before commits)
+- Remote verification (ensures correct fork)
 
-### Branching
+---
 
-- **Never commit directly to `main`.** If the current branch is `main`, create a feature
-  branch first.
-- Branch naming: `claude/<short-description>-<unix-timestamp>`
-  - Example: `claude/add-release-tool-1745698800`
-  - Keep the description short (2–4 words, hyphenated)
-- Always branch from the latest `main` on `origin`:
-  ```bash
-  git checkout main
-  git pull origin main
-  git checkout -b claude/<short-description>-$(date +%s)
-  ```
+## Git and GitHub Rules
 
-### New Work: Implementation Workflow
+**Never push to `aha-develop/aha-mcp` upstream fork. All work stays on `jcoplen-smart/aha-mcp`.**
 
-When starting any new work:
+Verify remote before pushes: `git remote -v` should show `jcoplen-smart/aha-mcp`.
 
-1. Pull latest main and create a `claude/` branch (see above)
-2. Implement changes
-3. Run `npm run build` — fix any errors before proceeding
-4. Run the self-review checklist (see API Conventions below)
-5. Commit with a descriptive conventional commit message (`feat: ...`, `fix: ...`, etc.)
-6. Push to `origin` (`jcoplen-smart/aha-mcp`)
-7. **Stop here.** Do not create a PR unless explicitly asked to.
+**Branch naming:** `claude/<description>-<timestamp>` (use `/create-branch`)
 
-Multiple rounds of work may be committed and pushed to the same branch before a PR is
-opened. Wait for the user to say it's time.
-
-### Opening a PR
-
-Only create a PR when the user explicitly asks. When asked:
-
-1. Summarize what has been committed to the branch since it was created from `main`
-2. Confirm `npm run build` is passing
-3. Create the PR:
-   ```bash
-   gh pr create --base main --title "feat: ..." --body "..."
-   ```
-   PR body should include: what changed, why, and any known risks or gaps.
-4. Return the PR URL. **Do not post `@codex review`** — Codex triggers automatically on PR open.
-
-### Responding to Code Review Feedback
-
-Codex (`chatgpt-codex-connector` bot) posts review feedback as PR comments with inline
-line-level annotations. It does not use GitHub's formal "Request changes" review state.
-
-When asked to respond to review feedback:
-
-1. **Find the PR for the current branch** — do not wait for a URL to be provided:
-   ```bash
-   gh pr view --json number,title,url,headRefName
-   ```
-   If that returns nothing, check the current branch with `git branch --show-current`
-   and then `gh pr list --head <branch-name>`.
-
-2. **Fetch all review comments:**
-   ```bash
-   # Top-level PR comments (where Codex posts its summary)
-   gh pr view <number> --json comments
-
-   # Inline line-level comments (with thread IDs needed for resolution)
-   gh api repos/jcoplen-smart/aha-mcp/pulls/<number>/comments
-   ```
-
-3. **Read and understand all feedback** before making any changes. Group related comments
-   together. If any feedback is unclear or contradictory, stop and ask before implementing.
-
-4. **Run the self-review checklist** (see API Conventions) against the feedback — confirm
-   each issue is real before fixing it.
-
-5. **Implement fixes.** Run `npm run build` after changes and confirm it passes.
-
-6. **Commit and push:**
-   ```bash
-   git add .
-   git commit -m "fix: address code review feedback"
-   git push origin <branch-name>
-   ```
-
-7. **Resolve each addressed review thread** via GraphQL (thread IDs come from the
-   `pull_request_review_thread` node in the inline comments response):
-   ```bash
-   gh api graphql -f query='mutation {
-     resolveReviewThread(input: {threadId: "<PRRT_...>"}) {
-       thread { isResolved }
-     }
-   }'
-   ```
-   Repeat for each resolved thread.
-
-8. **Trigger a fresh Codex review:**
-   ```bash
-   gh pr comment <number> --repo jcoplen-smart/aha-mcp --body "@codex review"
-   ```
+**Typical workflow:**
+1. `/create-branch <description>` or `/start-work <description>`
+2. Implement changes (read source files first to understand conventions)
+3. `/self-review` - validates against checklist below
+4. Commit and push (build validated automatically by hook)
+5. `/create-pr` - when ready for review
+6. `/respond-to-review` - after Codex feedback
 
 ---
 
@@ -189,17 +113,6 @@ a tool that requires an ID the user cannot provide.
 - The convention may differ between upstream tools and fork-added tools — check both.
 - When in doubt, match the convention used by the most recently added fork tool.
 
-### Self-review checklist before committing
+### Self-review checklist
 
-Before marking any task complete or creating a PR, check:
-
-1. Do all new tools accept identifier types the user can actually see in the Aha! UI?
-2. Do parameter names match the convention in existing fork-added handlers?
-3. Do return shapes match the convention established by similar existing tools?
-4. Is error handling consistent with the existing pattern in `handlers.ts`?
-5. Is the new tool registered in `src/index.ts` with a clear, specific description string?
-6. Does `npm run build` pass cleanly?
-7. Are there any hardcoded values that should be parameters?
-
-If the answer to any of 1–5 is "not sure" — read the relevant existing handlers and/or
-test the API. Do not guess.
+Use `/self-review` before committing to validate conventions.

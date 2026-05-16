@@ -11,10 +11,12 @@
     "build/**/*"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && node scripts/generate_custom_field_schema.cjs",
     "start": "node build/index.js",
     "mcp-start": "npm run build && npm run start",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "package": "node scripts/package-deployment.cjs",
+    "release": "npm run build && npm run package"
   },
   "keywords": [
     "aha",
@@ -32,7 +34,9 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@types/archiver": "^7.0.0",
     "@types/node": "^20.0.0",
+    "archiver": "^8.0.0",
     "typescript": "^5.0.0"
   }
 }

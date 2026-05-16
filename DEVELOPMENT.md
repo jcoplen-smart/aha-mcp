@@ -66,7 +66,7 @@ Required environment variables:
 
 Optional environment variables:
 
-- `AHA_CUSTOM_FIELD_SCHEMA_PATH` — Absolute or relative path to a custom field schema JSON file. Defaults to `config/aha_custom_field_schema.json`. Generate your own by exporting a custom field report from Aha! (Settings → Account → Custom fields → Export) and running `scripts/parse_custom_fields.py` against the downloaded CSV. The schema is loaded at server startup and used to populate tool description strings. If neither this variable nor the default path resolves, the server starts normally and logs a warning to stderr.
+- `AHA_CUSTOM_FIELD_SCHEMA_PATH` — (Deprecated) Previously used to specify a custom field schema JSON path. The schema is now fetched from the Aha! API at build time and cached in `build/aha_custom_field_schema.json` with automatic refresh. Use the `list_custom_fields` tool for runtime field discovery.
 
 ---
 

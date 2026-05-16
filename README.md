@@ -259,6 +259,36 @@ Searches for Aha! documents.
 | `PORT`          | Port for SSE transport                      | 3000     |
 | `TRANSPORT`     | Transport type (stdio or sse)               | stdio    |
 
+## Development
+
+### Building from Source
+
+**For development:**
+```bash
+npm run build
+```
+
+This will:
+1. Compile TypeScript sources to `build/`
+2. Fetch custom field definitions from Aha! API and cache to `build/aha_custom_field_schema.json` (30-day TTL)
+
+**For release/deployment:**
+```bash
+npm run release
+```
+
+This runs `build` and additionally creates `aha-mcp.zip` deployment package
+
+### Custom Field Schema
+
+The server automatically fetches custom field definitions from the Aha! API:
+
+- **Build time**: `scripts/generate_custom_field_schema.cjs` fetches all field definitions and options, writes to `build/aha_custom_field_schema.json` with 30-day cache expiry
+- **Runtime**: The `list_custom_fields` tool checks cache freshness and auto-refreshes if stale or missing
+- **No manual updates needed**: Schema stays fresh automatically
+
+The cached schema includes field IDs, keys, names, normalized types, and pre-fetched options for select fields.
+
 ## Troubleshooting
 
 <details>
