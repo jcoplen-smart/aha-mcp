@@ -1,6 +1,7 @@
 import { ErrorCode, McpError } from "@modelcontextprotocol/sdk/types.js";
 import { GraphQLClient } from "graphql-request";
 import * as path from "path";
+import { fileURLToPath } from "url";
 import {
   FEATURE_REF_REGEX,
   REQUIREMENT_REF_REGEX,
@@ -30,13 +31,18 @@ import {
 
 export class Handlers {
   private customFieldCache: CustomFieldSchema | null = null;
-  private readonly CACHE_PATH = path.join(__dirname, "aha_custom_field_schema.json");
+  private readonly CACHE_PATH: string;
 
   constructor(
     private client: GraphQLClient,
     private ahaDomain: string,
     private ahaApiToken: string
-  ) {}
+  ) {
+    // In ES modules, __dirname is not available, so we compute it from import.meta.url
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+    this.CACHE_PATH = path.join(__dirname, "aha_custom_field_schema.json");
+  }
 
   private async restRequest<T>(
     path: string,
