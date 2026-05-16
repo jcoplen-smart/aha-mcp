@@ -39,8 +39,11 @@ async function createPackage() {
   // Add directories
   console.log('Packaging build/ and node_modules/...');
   archive.directory('build/', 'build/');
-  archive.directory('node_modules/', 'node_modules/', {
-    // Exclude cache and git directories
+
+  // Use glob to properly exclude junk files from node_modules
+  archive.glob('**/*', {
+    cwd: 'node_modules',
+    prefix: 'node_modules/',
     ignore: ['**/.cache/**', '**/.git/**', '**/.DS_Store']
   });
 
